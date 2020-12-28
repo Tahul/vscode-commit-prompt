@@ -1,9 +1,8 @@
 import * as vscode from "vscode";
 import { loader } from "commitizen/dist/configLoader";
+import { Question } from "./helpers/getQuestions";
 
 export const EXTENSION_NAME = "vscode-cz-emoji";
-
-export type QuestionType = "scope" | "body" | "issues" | "type" | "subject";
 
 export type MessageType =
   | "type"
@@ -16,7 +15,8 @@ export type MessageType =
   | "footer";
 
 export interface CzScopeType {
-  name?: string;
+  name: string;
+  description: string;
 }
 
 export interface CzEmojiType {
@@ -28,18 +28,8 @@ export interface CzEmojiType {
 
 export interface CzEmojiConfig {
   types?: CzEmojiType[];
-  symbol?: boolean;
-  skipQuestions?: string[];
-  questions?: {
-    [key in QuestionType]: string;
-  };
-  subjectMaxLength?: number;
-  messages?: {
-    [key in MessageType]: string;
-  };
+  questions?: Question[];
   scopes?: CzScopeType[];
-  allowCustomScopes?: boolean;
-  allowBreakingChanges?: string[];
 }
 
 export interface CzConfig {
