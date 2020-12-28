@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-cz-emoji.commit"
+    "onCommand:vscode-cz-emoji.commit",
+    "onCommand:vscode-cz-emoji.add"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -18,6 +19,10 @@
       {
         "command": "vscode-cz-emoji.commit",
         "title": "cz-emoji: Commit"
+      },
+      {
+        "command": "vscode-cz-emoji.add",
+        "title": "cz-emoji: Add"
       }
     ],
     "configuration": {
@@ -70,5 +75,8 @@
   },
   "peerDependencies": {
     "commitizen": "^4.2.2"
+  },
+  "dependencies": {
+    "execa": "^5.0.0"
   }
 }
