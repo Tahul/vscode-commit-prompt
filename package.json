@@ -23,12 +23,12 @@
     "configuration": {
       "title": "cz-emoji configuration",
       "properties": {
-        "commitizen.subjectLength": {
+        "cz-emoji.subjectLength": {
           "type": "number",
           "default": 75,
           "description": "Override the allowed commit message subject length."
         },
-        "commitizen.showOutputChannel": {
+        "cz-emoji.showOutputChannel": {
           "type": "string",
           "enum": [
             "off",
