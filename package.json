@@ -19,7 +19,27 @@
         "command": "vscode-cz-emoji.commit",
         "title": "cz-emoji: Commit"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "cz-emoji configuration",
+      "properties": {
+        "commitizen.subjectLength": {
+          "type": "number",
+          "default": 75,
+          "description": "Override the allowed commit message subject length."
+        },
+        "commitizen.showOutputChannel": {
+          "type": "string",
+          "enum": [
+            "off",
+            "always",
+            "onError"
+          ],
+          "default": "onError",
+          "description": "Open the output panel after commit."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
