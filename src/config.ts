@@ -5,6 +5,20 @@ export const EXTENSION_NAME = "vscode-cz-emoji";
 
 export type QuestionType = "scope" | "body" | "issues" | "type" | "subject";
 
+export type MessageType =
+  | "type"
+  | "customScope"
+  | "customScopeEntry"
+  | "scope"
+  | "subject"
+  | "body"
+  | "breaking"
+  | "footer";
+
+export interface CzScopeType {
+  name?: string;
+}
+
 export interface CzEmojiType {
   emoji: string;
   code: string;
@@ -12,22 +26,34 @@ export interface CzEmojiType {
   name: string;
 }
 
+export interface CzEmojiConfig {
+  types?: CzEmojiType[];
+  symbol?: boolean;
+  skipQuestions?: string[];
+  questions?: {
+    [key in QuestionType]: string;
+  };
+  subjectMaxLength?: number;
+  messages?: {
+    [key in MessageType]: string;
+  };
+  scopes?: CzScopeType[];
+  allowCustomScopes?: boolean;
+  allowBreakingChanges?: string[];
+}
+
 export interface CzConfig {
   config?: {
-    "cz-emoji"?: {
-      scopes?: string[];
-      types?: CzEmojiType[];
-      symbol?: boolean;
-      skipQuestions?: string[];
-      questions?: {
-        [key in QuestionType]: string;
-      };
-      subjectMaxLength?: number;
-    };
+    "cz-emoji"?: CzEmojiConfig;
   };
 }
 
-export const getCzConfig = (): CzConfig => {
+export interface CzEmojiCodeConfig {
+  subjectLength: number;
+  showOutputChannel: "off" | "always" | "onError";
+}
+
+export const getCzConfig = (): CzEmojiConfig => {
   if (
     !vscode.workspace ||
     !vscode.workspace.workspaceFolders ||
@@ -42,5 +68,18 @@ export const getCzConfig = (): CzConfig => {
   const configs = [".czrc", ".cz.json", "package.json"];
 
   // Return the original commitizen config loader
-  return loader(configs, null, projectRoot) as CzConfig;
+  const czConfig = loader(configs, null, projectRoot) as CzConfig;
+
+  if (czConfig?.config?.["cz-emoji"]) {
+    return czConfig.config["cz-emoji"];
+  }
+
+  return {};
+};
+
+export const getVsCodeConfig = (): CzEmojiCodeConfig => {
+  const config = vscode.workspace
+    .getConfiguration()
+    .get<CzEmojiCodeConfig>("cz-emoji");
+  return config!;
 };
