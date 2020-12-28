@@ -1,9 +1,18 @@
 import * as vscode from "vscode";
-import registerCommands from "./commands";
+import generateCommands from "./commands";
+import { CzConfig, getCzConfig } from "./config";
 
-export function activate(context: vscode.ExtensionContext) {
+export const activate = (context: vscode.ExtensionContext) => {
+  // Get commitizen config
+  const czConfig: CzConfig = getCzConfig();
+
+  // Log config during dev phase
+  console.log(JSON.stringify(czConfig));
+
   // Register all commands
-  registerCommands(context);
-}
+  generateCommands(context, czConfig).forEach((command: vscode.Disposable) =>
+    context.subscriptions.push(command)
+  );
+};
 
-export function deactivate() {}
+export const deactivate = () => {};
