@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { EXTENSION_NAME } from "../config";
+import { CzConfig, EXTENSION_NAME } from "../config";
 
 // Commands
 import commit from "./commit";
@@ -11,22 +11,32 @@ export interface CommandReference {
   command: CommandCallback;
 }
 
-export const registerCommands = (context: vscode.ExtensionContext) => {
+export const generateCommands = (
+  context: vscode.ExtensionContext,
+  czConfig: CzConfig
+): vscode.Disposable[] => {
+  const disposables: vscode.Disposable[] = [];
+
   const commands: CommandReference[] = [
     {
       reference: "commit",
-      command: commit(context),
+      command: commit(context, czConfig),
     },
   ];
 
-  for (const command of commands) {
-    const disposable = vscode.commands.registerCommand(
-      `${EXTENSION_NAME}.${command.reference}`,
-      () => {}
+  for (const { reference, command } of commands) {
+    disposables.push(
+      vscode.commands.registerCommand(
+        `${EXTENSION_NAME}.${reference}`,
+        command,
+        () => {
+          console.log(`${command} registered for ${EXTENSION_NAME}`);
+        }
+      )
     );
-
-    context.subscriptions.push(disposable);
   }
+
+  return disposables;
 };
 
-export default registerCommands;
+export default generateCommands;
