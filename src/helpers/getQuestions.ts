@@ -8,7 +8,7 @@ import defaultQuestions, { Question } from "./defaultQuestion";
  */
 export const getQuestions = (czConfig: CzEmojiConfig): Question[] => {
   const questions: Question[] = !czConfig.questions
-    ? defaultQuestions
+    ? defaultQuestions(czConfig)
     : czConfig.questions;
 
   return questions;
