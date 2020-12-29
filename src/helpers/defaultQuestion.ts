@@ -1,4 +1,9 @@
-import { CommitPromptConfig, CommitPromptType, CpScopeType } from "../config";
+import {
+  CommitPromptCodeConfig,
+  CommitPromptConfig,
+  CommitPromptType,
+  CpScopeType,
+} from "../config";
 import { defaultTypes } from "./defaultTypes";
 
 export interface Question {
@@ -14,11 +19,14 @@ export interface Question {
 /**
  * Default questions from commit-prompt
  */
-export const defaultQuestions = (cpConfig: CommitPromptConfig): Question[] => {
+export const defaultQuestions = (
+  cpConfig: CommitPromptConfig,
+  cpCodeConfig: CommitPromptCodeConfig
+): Question[] => {
   const configTypes = cpConfig?.types;
   const types: CommitPromptType[] = configTypes
     ? configTypes
-    : defaultTypes(cpConfig);
+    : defaultTypes(cpConfig, cpCodeConfig);
 
   const configScopes = cpConfig?.scopes;
   const scopes: CpScopeType[] | undefined = configScopes

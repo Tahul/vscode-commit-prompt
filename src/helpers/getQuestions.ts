@@ -11,7 +11,7 @@ export const getQuestions = (
   cpCodeConfig: CommitPromptCodeConfig
 ): Question[] => {
   const questions: Question[] = !cpConfig.questions
-    ? defaultQuestions(cpConfig)
+    ? defaultQuestions(cpConfig, cpCodeConfig)
     : cpConfig.questions;
 
   // Set subject maxLength from config
