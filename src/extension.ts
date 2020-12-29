@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import generateCommands from "./commands";
 import {
-  CzEmojiCodeConfig,
-  CzEmojiConfig,
-  getCzConfig,
+  CommitPromptCodeConfig,
+  CommitPromptConfig,
+  getCpConfig,
   getVsCodeConfig,
 } from "./config";
 import getGit from "./helpers/getGit";
@@ -11,16 +11,18 @@ import { API as GitAPI } from "./typings/git";
 
 export const activate = (context: vscode.ExtensionContext) => {
   // Get commitizen config
-  const czConfig: CzEmojiConfig = getCzConfig();
+  const cpConfig: CommitPromptConfig = getCpConfig();
 
   // Get extension config
-  const czCodeConfig: CzEmojiCodeConfig = getVsCodeConfig();
+  const cpCodeConfig: CommitPromptCodeConfig = getVsCodeConfig();
 
   // Get editor Git instance
   const git: GitAPI | undefined = getGit();
 
   if (!git) {
-    vscode.window.showErrorMessage("Cannot find git extension for cz-emoji!");
+    vscode.window.showErrorMessage(
+      "Cannot find git extension for commit-prompt!"
+    );
 
     return false;
   }
@@ -28,8 +30,8 @@ export const activate = (context: vscode.ExtensionContext) => {
   // Register all commands
   for (const command of generateCommands(
     context,
-    czConfig,
-    czCodeConfig,
+    cpConfig,
+    cpCodeConfig,
     git
   )) {
     context.subscriptions.push(command);

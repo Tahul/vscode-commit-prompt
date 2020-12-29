@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import loader from "./helpers/configLoader/loader";
 import { Question } from "./helpers/defaultQuestion";
 
-export const EXTENSION_NAME = "vscode-cz-emoji";
+export const EXTENSION_NAME = "vscode-commit-prompt";
 
 export type MessageType =
   | "type"
@@ -12,37 +12,37 @@ export type MessageType =
   | "breaking"
   | "footer";
 
-export interface CzScopeType {
+export interface CpScopeType {
   name: string;
   description: string;
 }
 
-export interface CzEmojiType {
+export interface CommitPromptType {
   emoji: string;
   code: string;
   description: string;
   name: string;
 }
 
-export interface CzEmojiConfig {
-  types?: CzEmojiType[];
+export interface CommitPromptConfig {
+  types?: CommitPromptType[];
   questions?: Question[];
-  scopes?: CzScopeType[];
+  scopes?: CpScopeType[];
 }
 
-export interface CzConfig {
+export interface CpConfig {
   config?: {
-    "cz-emoji"?: CzEmojiConfig;
+    "commit-prompt"?: CommitPromptConfig;
   };
 }
 
-export interface CzEmojiCodeConfig {
+export interface CommitPromptCodeConfig {
   subjectLength: number;
   showOutputChannel: "off" | "always" | "onError";
   addBeforeCommit: boolean;
 }
 
-export const getCzConfig = (): CzEmojiConfig => {
+export const getCpConfig = (): CommitPromptConfig => {
   if (
     !vscode.workspace ||
     !vscode.workspace.workspaceFolders ||
@@ -54,21 +54,21 @@ export const getCzConfig = (): CzEmojiConfig => {
   const projectRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
   // Configuration sources in priority order.
-  const configs = [".czrc", ".cz.json", "package.json"];
+  const configs = [".cprc", ".cp.json", "package.json"];
 
   // Return the original commitizen config loader
-  const czConfig = loader(configs, null, projectRoot) as CzConfig;
+  const cpConfig = loader(configs, null, projectRoot) as CpConfig;
 
-  if (czConfig?.config?.["cz-emoji"]) {
-    return czConfig.config["cz-emoji"];
+  if (cpConfig?.config?.["commit-prompt"]) {
+    return cpConfig.config["commit-prompt"];
   }
 
   return {};
 };
 
-export const getVsCodeConfig = (): CzEmojiCodeConfig => {
+export const getVsCodeConfig = (): CommitPromptCodeConfig => {
   const config = vscode.workspace
     .getConfiguration()
-    .get<CzEmojiCodeConfig>("cz-emoji");
+    .get<CommitPromptCodeConfig>("commit-prompt");
   return config!;
 };
