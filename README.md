@@ -15,7 +15,7 @@ This [demo](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo.g
 
 You can also find a demo of the `cz-emoji` preset [here](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo_emoji.gif).
 
-![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo.gif "Demo conventional-commits")
+![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif?raw=true)
 
 ## ⌨️ Keybindings
 
