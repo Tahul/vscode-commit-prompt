@@ -206,6 +206,6 @@ export interface Question {
 
 This VSCode app has been written by [Yaël GUILLOUX](https://twitter.com/yaeeelglx).
 
-This has been heavily inspired by [commit-prompt](https://github.com/ngryman/commit-prompt) by [ngryman](https://github.com/ngryman).
+This has been heavily inspired by [cz-emoji](https://github.com/ngryman/cz-emoji) by [ngryman](https://github.com/ngryman).
 
 If you have any question concerning this app, don't hesitate to reach me, on [Twitter](https://twitter.com/yaeeelglx) or by [email](mailto:yael.guilloux@gmail.com).
