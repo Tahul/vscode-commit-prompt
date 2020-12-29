@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import ask from "./ask";
-import { CzEmojiType } from "../config";
+import { CzEmojiType, CzScopeType } from "../config";
 import { Question } from "./defaultQuestion";
 
 /**
@@ -22,13 +22,47 @@ const castTypesToQuickPickItems = (
 };
 
 /**
+ * Cast a Scope Type from cz-emoji into a QuickPickItem from VSCode.
+ *
+ * @param scopes
+ */
+const castScopesToQuickPickItems = (
+  scopes: CzScopeType[]
+): vscode.QuickPickItem[] => {
+  return scopes.map(
+    (scope: CzScopeType): vscode.QuickPickItem => {
+      return {
+        label: scope.name,
+        description: scope.description,
+      };
+    }
+  );
+};
+
+/**
  * Ask a selectable question using showQuickPick.
  *
  * @param question Question
  */
 export const askOneOf = async (question: Question): Promise<string> => {
-  if (!question.picks) {
+  let quickpickItems: vscode.QuickPickItem[] = [];
+
+  // No types nor scopes, return a plain input
+  if (!question.emojiTypes && !question.scopes) {
     return await ask(question);
+  }
+
+  // Add emoji types to quickpick
+  if (question.emojiTypes) {
+    quickpickItems = castTypesToQuickPickItems(question.emojiTypes);
+  }
+
+  // Add scopes to quickpick
+  if (question.scopes) {
+    quickpickItems = [
+      ...quickpickItems,
+      ...castScopesToQuickPickItems(question.scopes),
+    ];
   }
 
   const pickOptions: vscode.QuickPickOptions = {
@@ -38,10 +72,7 @@ export const askOneOf = async (question: Question): Promise<string> => {
     matchOnDetail: true,
   };
 
-  const pick = await vscode.window.showQuickPick(
-    castTypesToQuickPickItems(question.picks),
-    pickOptions
-  );
+  const pick = await vscode.window.showQuickPick(quickpickItems, pickOptions);
 
   if (pick === undefined) {
     throw new Error("Input escaped, commit cancelled.");
