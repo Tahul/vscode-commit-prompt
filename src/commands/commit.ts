@@ -1,34 +1,46 @@
 import * as vscode from "vscode";
-import { CommandCallback } from ".";
-import { CzEmojiCodeConfig, CzEmojiConfig } from "../config";
 import ask from "../helpers/ask";
 import askOneOf from "../helpers/askOneOf";
-import { getQuestions } from "../helpers/getQuestions";
-import { API as GitAPI } from "../typings/git";
+import getQuestions from "../helpers/getQuestions";
+import gitCommit from "../helpers/gitCommit";
 import add from "./add";
+import { CzEmojiCodeConfig, CzEmojiConfig } from "../config";
+import { API as GitAPI } from "../typings/git";
+import { CommandCallback } from ".";
 
 export const commit = (
   git: GitAPI,
-  context: vscode.ExtensionContext,
   czConfig: CzEmojiConfig,
   czCodeConfig: CzEmojiCodeConfig
 ): CommandCallback => {
-  const questions = getQuestions(czConfig, czCodeConfig);
+  const questions = getQuestions(czConfig);
 
   return async () => {
+    if (czCodeConfig.addBeforeCommit) {
+      await add(git)();
+    }
+
     let commitMessage: string = "";
 
     for (const question of questions) {
-      if (question.type === "oneOf") {
-        commitMessage += await askOneOf(question, commitMessage);
-      }
+      try {
+        if (question.type === "oneOf") {
+          commitMessage += await askOneOf(question);
+        }
 
-      if (question.type === "input") {
-        commitMessage += await ask(question, commitMessage);
+        if (question.type === "input") {
+          commitMessage += await ask(question, commitMessage);
+        }
+      } catch (e) {
+        console.log("Cancelling commit!");
+        return;
       }
     }
 
+    console.log("Commiting:\n");
     console.log(commitMessage);
+
+    await gitCommit(commitMessage);
   };
 };
 
