@@ -1,8 +1,13 @@
 import * as vscode from "vscode";
-import { CzEmojiType } from "../config";
 import ask from "./ask";
-import { Question } from "./getQuestions";
+import { CzEmojiType } from "../config";
+import { Question } from "./defaultQuestion";
 
+/**
+ * Cast an Emoji Type from cz-emoji into a QuickPickItem from VSCode.
+ *
+ * @param emojiTypes CzEmojiType[]
+ */
 const castTypesToQuickPickItems = (
   emojiTypes: CzEmojiType[]
 ): vscode.QuickPickItem[] => {
@@ -16,10 +21,12 @@ const castTypesToQuickPickItems = (
   );
 };
 
-export const askOneOf = async (
-  question: Question,
-  currentValue?: string
-): Promise<string> => {
+/**
+ * Ask a selectable question using showQuickPick.
+ *
+ * @param question Question
+ */
+export const askOneOf = async (question: Question): Promise<string> => {
   if (!question.picks) {
     return await ask(question);
   }
@@ -37,7 +44,7 @@ export const askOneOf = async (
   );
 
   if (pick === undefined) {
-    return "";
+    throw new Error("Input escaped, commit cancelled.");
   }
 
   // Return formatted question result
