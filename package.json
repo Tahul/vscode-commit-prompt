@@ -1,12 +1,12 @@
 {
-  "name": "vscode-cz-emoji",
-  "displayName": "vscode-cz-emoji",
-  "description": "💄💄 VSCode support for cz-emoji commitizen extension.",
-  "version": "1.1.0",
+  "name": "vscode-commit-prompt",
+  "displayName": "vscode-commit-prompt",
+  "description": "💄💄 VSCode commit prompt.",
+  "version": "1.1.1",
   "publisher": "yaelguilloux",
-  "repository": "https://github.com/Tahul/vscode-cz-emoji",
+  "repository": "https://github.com/Tahul/vscode-commit-prompt",
   "license": "LICENSE",
-  "icon": "docs/vscode-cz-emoji.png",
+  "icon": "docs/vscode-commit-prompt.png",
   "author": {
     "name": "Yaël GUILLOUX",
     "email": "yael.guilloux@gmail.com",
@@ -25,20 +25,20 @@
     "Linters"
   ],
   "activationEvents": [
-    "onCommand:vscode-cz-emoji.commit",
-    "onCommand:vscode-cz-emoji.add"
+    "onCommand:vscode-commit-prompt.commit",
+    "onCommand:vscode-commit-prompt.add"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "keybindings": [
       {
-        "command": "vscode-cz-emoji.commit",
+        "command": "vscode-commit-prompt.commit",
         "key": "ctrl+y",
         "mac": "cmd+y",
         "when": "editorTextFocus"
       },
       {
-        "command": "vscode-cz-emoji.add",
+        "command": "vscode-commit-prompt.add",
         "key": "",
         "mac": "",
         "when": "editorTextFocus"
@@ -46,23 +46,32 @@
     ],
     "commands": [
       {
-        "command": "vscode-cz-emoji.commit",
-        "title": "cz-emoji: Commit"
+        "command": "vscode-commit-prompt.commit",
+        "title": "commit-prompt: Commit"
       },
       {
-        "command": "vscode-cz-emoji.add",
-        "title": "cz-emoji: Add"
+        "command": "vscode-commit-prompt.add",
+        "title": "commit-prompt: Add"
       }
     ],
     "configuration": {
-      "title": "cz-emoji configuration",
+      "title": "commit-prompt configuration",
       "properties": {
-        "cz-emoji.subjectLength": {
+        "commit-prompt.preset": {
+          "type": "string",
+          "description": "Select between the two default presets if you don't override from repository config.",
+          "enum": [
+            "conventional-commits",
+            "cz-emoji"
+          ],
+          "default": "conventional-commits"
+        },
+        "commit-prompt.subjectLength": {
           "type": "number",
           "default": 75,
           "description": "Override the allowed commit message subject length."
         },
-        "cz-emoji.showOutputChannel": {
+        "commit-prompt.showOutputChannel": {
           "type": "string",
           "enum": [
             "off",
@@ -72,7 +81,7 @@
           "default": "onError",
           "description": "Open the output panel after commit."
         },
-        "cz-emoji.addBeforeCommit": {
+        "commit-prompt.addBeforeCommit": {
           "type": "boolean",
           "default": true,
           "description": "Always show git add prompt before writing your commit."

@@ -1,9 +1,9 @@
-# 💄 vscode-cz-emoji
+# ⛏ vscode-commit-prompt
 
-Commit faster and cleaner with [cz-emoji](https://github.com/ngryman/cz-emoji) support for VS Code.
+Commit faster and cleaner with [commit-prompt](https://github.com/ngryman/commit-prompt) support for VS Code.
 
 - ⌨ Commit multiple files without using your mouse once.
-- 💄 Improve your git history with a strong default preset.
+- 💄 Improve your git history with two strong default presets.
 - ⚙ Specify your own questions, types, scopes from a simple config file.
 - ✅ Based on the well known [commitizen](https://github.com/commitizen/cz-cli) and [Conventional Commits](https://www.conventionalcommits.org/).
 
@@ -21,23 +21,29 @@ The default keybinding is the following:
 
 ```json
 {
-  "command": "vscode-cz-emoji.commit",
+  "command": "vscode-commit-prompt.commit",
   "key": "ctrl+y",
   "mac": "cmd+y",
   "when": "editorTextFocus"
 }
 ```
 
-You can edit it from your own vscode keybindings settings using the key `vscode-cz-emoji.commit`.
+You can edit it from your own vscode keybindings settings using the key `vscode-commit-prompt.commit`.
 
-You can also add a key for the `Add` command only using `vscode-cz-emoji.add`.
+You can also add a key for the `Add` command only using `vscode-commit-prompt.add`.
 
 ## ⚙️ Config
 
-The config can be specified from 3 places:
+There is two way to handle the configuration of this extension.
 
-- `.czrc` file placed at root.
-- `.cz.json` file placed at root.
+The first is to use the configuration parameters from VSCode, you will find all the available settings under `commit-prompt` keys.
+
+The second is to use config files from the current repository you are working with.
+
+The per repository config can be specified from 3 places:
+
+- `.cprc` file placed at root.
+- `.cp.json` file placed at root.
 - "config" key in `package.json`.
 
 The format must be the following:
@@ -45,12 +51,40 @@ The format must be the following:
 ```json
 {
   "config": {
-    "cz-emoji": {}
+    "commit-prompt": {}
   }
 }
 ```
 
-### Config keys
+> I recommend you to use the package.json config key.
+
+### VSCode settings
+
+VSCode settings exposes three parameters:
+
+#### Add Before Commit `commit-prompt.addBeforeCommit`
+
+Whether or not you want the extension to show the `add` each team you hit the `commit` command.
+
+Default: `true`
+
+#### Subject Length `commit-prompt.subjectLength`
+
+The max allowed length for the commit subject.
+
+Default: `75`
+
+#### Show Output Channel `commit-prompt.showOutputChannel`
+
+Show the output channel when you commit.
+
+This allows three values: `onError`, `off`, `always`.
+
+Default: `onError`
+
+### Per repository config
+
+Per repository config exposes three parameters: `scopes`, `types` and `questions`.
 
 #### _scopes_ (optional)
 
@@ -61,9 +95,9 @@ If you want to lock scopes, and specify a list, you can by using the `scope` att
 Specify a list of scope, and you will be prompted to chose between them on each commit.
 
 ```typescript
-const scopes: CzScopeType;
+const scopes: CpScopeType;
 
-export interface CzScopeType {
+export interface CpScopeType {
   name: string;
   description: string;
 }
@@ -72,7 +106,7 @@ export interface CzScopeType {
 ```json
 {
   "config": {
-    "cz-emoji": {
+    "commit-prompt": {
       "scopes": [
         {
           "name": "the-next-big-feature",
@@ -88,23 +122,23 @@ export interface CzScopeType {
 
 If you specify this key in config, the default types will be overwritten by yours completely.
 
-Default can be found in [defaultTypes.ts](https://github.com/Tahul/vscode-cz-emoji/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your own config.
+Default can be found in [defaultTypes.ts](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your own config.
 
 ```typescript
-const types: CzEmojiType[];
+const types: CommitPromptType[];
 
-interface CzEmojiType {
-  emoji: string;
-  code: string;
-  description: string;
-  name: string;
+interface CommitPromptType {
+  emoji?: string; // The emoji displayed (optional)
+  code: string; // The value added to the commit message (gitmojis works)
+  description: string; // The description displayed in the prompt
+  name: string; // An id
 }
 ```
 
 ```json
 {
   "config": {
-    "cz-emoji": {
+    "commit-prompt": {
       "types": [
         {
           "emoji": "💄",
@@ -133,8 +167,8 @@ export interface Question {
   name: string;
   type: "oneOf" | "input";
   placeHolder: string;
-  emojiTypes?: CzEmojiType[];
-  scopes?: CzScopeType[];
+  emojiTypes?: CommitPromptType[];
+  scopes?: CpScopeType[];
   format?: string;
 }
 ```
@@ -142,7 +176,7 @@ export interface Question {
 ```json
 {
   "config": {
-    "cz-emoji": {
+    "commit-prompt": {
       "questions": [
         {
           "name": "type",
@@ -168,6 +202,6 @@ export interface Question {
 
 This VSCode app has been written by [Yaël GUILLOUX](https://twitter.com/yaeeelglx).
 
-This has been heavily inspired by [cz-emoji](https://github.com/ngryman/cz-emoji) by [ngryman](https://github.com/ngryman).
+This has been heavily inspired by [commit-prompt](https://github.com/ngryman/commit-prompt) by [ngryman](https://github.com/ngryman).
 
 If you have any question concerning this app, don't hesitate to reach me, on [Twitter](https://twitter.com/yaeeelglx) or by [email](mailto:yael.guilloux@gmail.com).
