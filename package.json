@@ -1,7 +1,7 @@
 {
   "name": "vscode-commit-prompt",
   "displayName": "vscode-commit-prompt",
-  "description": "💄💄 VSCode commit prompt.",
+  "description": "⛏ VSCode keybound formatted commit prompt.",
   "version": "1.1.1",
   "publisher": "yaelguilloux",
   "repository": "https://github.com/Tahul/vscode-commit-prompt",
