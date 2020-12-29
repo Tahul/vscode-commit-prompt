@@ -20,7 +20,7 @@ export const add = (git: GitAPI): CommandCallback => {
       picks = await askMultiple(await getCurrentChanges(git));
     } catch (e) {
       console.log("Cancelling adding!");
-      return;
+      return false;
     }
 
     const repo: Repository = git.repositories[0];
@@ -43,6 +43,8 @@ export const add = (git: GitAPI): CommandCallback => {
     for (const pick of picks) {
       await gitAdd(git, repo, pick);
     }
+
+    return true;
   };
 };
 
