@@ -16,10 +16,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   // Get extension config
   const czCodeConfig: CzEmojiCodeConfig = getVsCodeConfig();
 
-  // Log config during dev phase
-  console.log("commitizen config: " + JSON.stringify(czConfig));
-  console.log("vscode config: " + JSON.stringify(czCodeConfig));
-
+  // Get editor Git instance
   const git: GitAPI | undefined = getGit();
 
   if (!git) {
