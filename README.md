@@ -1,8 +1,8 @@
 # ⛏ vscode-commit-prompt
 
-Commit faster and cleaner with [commit-prompt](https://github.com/ngryman/commit-prompt) support for VS Code.
+Commit **faster** and **cleaner** with keybound formatted **commit prompt** for VS Code.
 
-- ⌨ Commit multiple files without using your mouse once.
+- ⌨ Add & commit multiple files without using your mouse once.
 - 💄 Improve your git history with two strong default presets.
 - ⚙ Specify your own questions, types, scopes from a simple config file.
 - ✅ Based on the well known [commitizen](https://github.com/commitizen/cz-cli) and [Conventional Commits](https://www.conventionalcommits.org/).
