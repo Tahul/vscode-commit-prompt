@@ -45,7 +45,8 @@ export const defaultQuestions = (
       placeHolder: "Specify a scope (scope)",
       type: scopes ? "oneOf" : "input",
       scopes: scopes ? scopes : undefined,
-      format: " ({value}) ",
+      format:
+        cpCodeConfig.preset === "cz-emoji" ? " ({value}) " : " [{value}] ",
     },
     {
       name: "subject",
