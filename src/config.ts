@@ -1,13 +1,11 @@
 import * as vscode from "vscode";
 import { loader } from "commitizen/dist/configLoader";
-import { Question } from "./helpers/getQuestions";
+import { Question } from "./helpers/defaultQuestion";
 
 export const EXTENSION_NAME = "vscode-cz-emoji";
 
 export type MessageType =
   | "type"
-  | "customScope"
-  | "customScopeEntry"
   | "scope"
   | "subject"
   | "body"
@@ -41,6 +39,7 @@ export interface CzConfig {
 export interface CzEmojiCodeConfig {
   subjectLength: number;
   showOutputChannel: "off" | "always" | "onError";
+  addBeforeCommit: boolean;
 }
 
 export const getCzConfig = (): CzEmojiConfig => {
