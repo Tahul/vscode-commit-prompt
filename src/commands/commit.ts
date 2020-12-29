@@ -1,22 +1,21 @@
-import * as vscode from "vscode";
 import ask from "../helpers/ask";
 import askOneOf from "../helpers/askOneOf";
 import getQuestions from "../helpers/getQuestions";
 import gitCommit from "../helpers/gitCommit";
 import add from "./add";
-import { CzEmojiCodeConfig, CzEmojiConfig } from "../config";
+import { CommitPromptCodeConfig, CommitPromptConfig } from "../config";
 import { API as GitAPI } from "../typings/git";
 import { CommandCallback } from ".";
 
 export const commit = (
   git: GitAPI,
-  czConfig: CzEmojiConfig,
-  czCodeConfig: CzEmojiCodeConfig
+  cpConfig: CommitPromptConfig,
+  cpCodeConfig: CommitPromptCodeConfig
 ): CommandCallback => {
-  const questions = getQuestions(czConfig);
+  const questions = getQuestions(cpConfig, cpCodeConfig);
 
   return async () => {
-    if (czCodeConfig.addBeforeCommit) {
+    if (cpCodeConfig.addBeforeCommit) {
       const addResult: boolean = await add(git)();
 
       // Cancel prompts if escaped

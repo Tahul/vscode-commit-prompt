@@ -1,5 +1,9 @@
 import * as vscode from "vscode";
-import { CzEmojiCodeConfig, CzEmojiConfig, EXTENSION_NAME } from "../config";
+import {
+  CommitPromptCodeConfig,
+  CommitPromptConfig,
+  EXTENSION_NAME,
+} from "../config";
 import { API as GitAPI } from "../typings/git";
 import add from "./add";
 
@@ -15,8 +19,8 @@ export interface CommandReference {
 
 export const generateCommands = (
   context: vscode.ExtensionContext,
-  czConfig: CzEmojiConfig,
-  czCodeConfig: CzEmojiCodeConfig,
+  cpConfig: CommitPromptConfig,
+  cpCodeConfig: CommitPromptCodeConfig,
   git: GitAPI
 ): vscode.Disposable[] => {
   const disposables: vscode.Disposable[] = [];
@@ -24,7 +28,7 @@ export const generateCommands = (
   const commands: CommandReference[] = [
     {
       reference: "commit",
-      command: commit(git, czConfig, czCodeConfig),
+      command: commit(git, cpConfig, cpCodeConfig),
     },
     {
       reference: "add",
