@@ -1,5 +1,7 @@
 # ⛏ vscode-commit-prompt
 
+![VS Marketplace Badge](https://vsmarketplacebadge.apphb.com/version-short/yaelguilloux.vscode-commit-prompt.svg)
+
 Commit **faster** and **cleaner** with keybound formatted **commit prompt** for VS Code.
 
 - ⌨ Add & commit multiple files without using your mouse once.
@@ -9,9 +11,9 @@ Commit **faster** and **cleaner** with keybound formatted **commit prompt** for 
 
 ## 🎮 Demo
 
-This [demo](https://i.imgur.com/Q3FuQ5X.gif) shows a simple commit, with the default setup you will get after installing the extension.
+This [demo](https://i.imgur.com/24sNrgN.gif) shows a simple commit, with the default setup you will get after installing the extension.
 
-![Demo](https://i.imgur.com/Q3FuQ5X.gif)
+![Demo](https://i.imgur.com/24sNrgN.gif)
 
 ## ⌨️ Keybindings
 
