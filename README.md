@@ -11,11 +11,11 @@ Commit **faster** and **cleaner** with keybound formatted **commit prompt** for 
 
 ## 🎮 Demo
 
-This [demo](https://i.imgur.com/r0DnW2j.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
+This [demo](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
 
-You can also find a demo of the `cz-emoji` preset [here](https://i.imgur.com/KdhQncO.gif).
+You can also find a demo of the `cz-emoji` preset [here](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo_emoji.gif).
 
-![Demo conventional-commits](https://i.imgur.com/r0DnW2j.gif?raw=true)
+![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/raw/master/docs/demo.gif "Demo conventional-commits")
 
 ## ⌨️ Keybindings
 
