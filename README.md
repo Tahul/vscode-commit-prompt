@@ -67,7 +67,7 @@ export interface CzScopeType {
 
 If you specify this key in config, the default types will be overwritten by yours completely.
 
-Default can be found in [defaultTypes.ts](/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your own config.
+Default can be found in [defaultTypes.ts](https://github.com/Tahul/vscode-cz-emoji/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your own config.
 
 ```typescript
 const types: CzEmojiType[];
