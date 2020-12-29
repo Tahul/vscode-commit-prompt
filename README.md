@@ -11,9 +11,9 @@ Commit **faster** and **cleaner** with keybound formatted **commit prompt** for 
 
 ## 🎮 Demo
 
-This [demo](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif?raw=true) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
+This [demo](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
 
-You can also find a demo of the `cz-emoji` preset [here](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo_emoji.gif?raw=true).
+You can also find a demo of the `cz-emoji` preset [here](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo_emoji.gif).
 
 ![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif?raw=true)
 
@@ -66,7 +66,7 @@ The format must be the following:
 
 VSCode settings exposes four parameters:
 
-### Preset `commit-prompt.addBeforeCommit`
+#### Preset `commit-prompt.addBeforeCommit`
 
 You can choose between `conventional-commits` and `cz-emoji`.
 
