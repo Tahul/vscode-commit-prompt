@@ -15,7 +15,9 @@ const castTypesToQuickPickItems = (
     (emojiType: CommitPromptType): vscode.QuickPickItem => {
       return {
         label: emojiType.code,
-        description: `${emojiType.emoji} | ${emojiType.description} (${emojiType.name})`,
+        description: `${emojiType?.emoji ? `${emojiType.emoji} | ` : ``}${
+          emojiType.description
+        } (${emojiType.name})`,
       };
     }
   );
