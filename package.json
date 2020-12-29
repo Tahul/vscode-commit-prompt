@@ -2,10 +2,20 @@
   "name": "vscode-cz-emoji",
   "displayName": "vscode-cz-emoji",
   "description": "💄💄 VSCode support for cz-emoji commitizen extension.",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "publisher": "yaelguilloux",
   "repository": "https://github.com/Tahul/vscode-cz-emoji",
+  "license": "LICENSE",
   "icon": "docs/vscode-cz-emoji.png",
+  "author": {
+    "name": "Yaël GUILLOUX",
+    "email": "yael.guilloux@gmail.com",
+    "url": "https://yael.dev"
+  },
+  "galleryBanner": {
+    "color": "#A9A1FF",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.52.0"
   },
