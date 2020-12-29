@@ -24,7 +24,7 @@ export const generateCommands = (
   const commands: CommandReference[] = [
     {
       reference: "commit",
-      command: commit(git, context, czConfig, czCodeConfig),
+      command: commit(git, czConfig, czCodeConfig),
     },
     {
       reference: "add",
