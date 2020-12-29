@@ -64,7 +64,20 @@ The format must be the following:
 
 ### VSCode settings
 
-VSCode settings exposes three parameters:
+VSCode settings exposes four parameters:
+
+### Preset `commit-prompt.addBeforeCommit`
+
+You can choose between `conventional-commits` and `cz-emoji`.
+
+You can find preset types content here:
+
+- [conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L412)
+- [cz-emoji](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L19)
+
+This parameter will be ignored if you overwrite `types` or `questions` from `package.json` or `.cprc`.
+
+Default: `conventional-commits`.
 
 #### Add Before Commit `commit-prompt.addBeforeCommit`
 
@@ -160,7 +173,7 @@ interface CommitPromptType {
 
 Specifying `questions` key will result in overwriting the complete default scenario.
 
-This means you easily build your own scenario from the config file.
+This means you can easily build your own scenario from the config file.
 
 Note that using this key will result in both types and scopes keys to be useless, as you will have to specify these keys directly from your questions payloads.
 
