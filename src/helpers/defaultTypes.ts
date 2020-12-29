@@ -1,5 +1,8 @@
 import { CzEmojiType } from "../config";
 
+/**
+ * Default types from cz-emoji.
+ */
 export const defaultTypes: CzEmojiType[] = [
   {
     emoji: "🎨",
