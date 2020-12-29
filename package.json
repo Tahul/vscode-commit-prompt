@@ -15,6 +15,14 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "vscode-cz-emoji.commit",
+        "key": "ctrl+y",
+        "mac": "cmd+y",
+        "when": "editorTextFocus"
+      }
+    ],
     "commands": [
       {
         "command": "vscode-cz-emoji.commit",
