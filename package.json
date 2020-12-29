@@ -2,12 +2,14 @@
   "name": "vscode-cz-emoji",
   "displayName": "vscode-cz-emoji",
   "description": "💄💄 VSCode support for cz-emoji commitizen extension.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.52.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "SCM Providers",
+    "Linters"
   ],
   "activationEvents": [
     "onCommand:vscode-cz-emoji.commit",
