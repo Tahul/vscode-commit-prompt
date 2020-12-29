@@ -1,6 +1,11 @@
 import * as vscode from "vscode";
-import { Question } from "./getQuestions";
+import { Question } from "./defaultQuestion";
 
+/**
+ * Ask a question using showInputBox and displays the current value inside the prompt.
+ * @param question
+ * @param currentValue
+ */
 export const ask = async (
   question: Question,
   currentValue?: string
@@ -13,7 +18,11 @@ export const ask = async (
 
   const input = await vscode.window.showInputBox(options);
 
-  if (input === undefined || input === "") {
+  if (input === undefined) {
+    throw new Error("Input escaped, commit cancelled.");
+  }
+
+  if (input === "") {
     return "";
   }
 
