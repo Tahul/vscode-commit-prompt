@@ -42,6 +42,11 @@
           ],
           "default": "onError",
           "description": "Open the output panel after commit."
+        },
+        "cz-emoji.addBeforeCommit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Always show git add prompt before writing your commit."
         }
       }
     }
