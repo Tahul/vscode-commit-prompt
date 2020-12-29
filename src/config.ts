@@ -18,7 +18,7 @@ export interface CpScopeType {
 }
 
 export interface CommitPromptType {
-  emoji: string;
+  emoji?: string;
   code: string;
   description: string;
   name: string;
@@ -40,6 +40,7 @@ export interface CommitPromptCodeConfig {
   subjectLength: number;
   showOutputChannel: "off" | "always" | "onError";
   addBeforeCommit: boolean;
+  preset: "conventional-commits" | "cz-emoji";
 }
 
 export const getCpConfig = (): CommitPromptConfig => {
