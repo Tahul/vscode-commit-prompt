@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { loader } from "commitizen/dist/configLoader";
+import loader from "./helpers/configLoader/loader";
 import { Question } from "./helpers/defaultQuestion";
 
 export const EXTENSION_NAME = "vscode-cz-emoji";
