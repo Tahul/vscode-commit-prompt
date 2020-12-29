@@ -11,11 +11,11 @@ Commit **faster** and **cleaner** with keybound formatted **commit prompt** for 
 
 ## 🎮 Demo
 
-This [demo](https://i.imgur.com/s24t7OX.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
+This [demo](https://i.imgur.com/r0DnW2j.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
 
 You can also find a demo of the `cz-emoji` preset [here](https://i.imgur.com/KdhQncO.gif).
 
-![Demo](https://i.imgur.com/s24t7OX.gif)
+![Demo](https://i.imgur.com/r0DnW2j.gif)
 
 ## ⌨️ Keybindings
 
