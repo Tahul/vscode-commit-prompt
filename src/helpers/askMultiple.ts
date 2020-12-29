@@ -1,8 +1,12 @@
 import * as vscode from "vscode";
 import { Change, Status } from "../typings/git";
-import ask from "./ask";
-import { Question } from "./getQuestions";
 
+/**
+ * Cast Change[] from vscode-git into a QuickPickItem[] from VSCode.
+ *
+ * @param changes Change[]
+ * @param cwd string
+ */
 const castChangesToQuickPickItems = (
   changes: Change[],
   cwd: string
@@ -13,6 +17,7 @@ const castChangesToQuickPickItems = (
         label: change.uri.path.replace(cwd, ""),
         picked: [
           Status.INDEX_MODIFIED,
+          Status.INDEX_ADDED,
           Status.ADDED_BY_US,
           Status.ADDED_BY_THEM,
           Status.BOTH_ADDED,
@@ -22,8 +27,15 @@ const castChangesToQuickPickItems = (
   );
 };
 
+/**
+ * Ask to pick between multiple file changes from Git current tree.
+ * Picked = added to next commit
+ * Unpicked = not in next commit
+ *
+ * @param changes
+ */
 export const askMultiple = async (changes: Change[]): Promise<Change[]> => {
-  // @ts-ignore
+  // @ts-ignore - get cwd
   const cwd: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
   const addedChanges: Change[] = [];
   const pickOptions: vscode.QuickPickOptions = {
@@ -34,14 +46,14 @@ export const askMultiple = async (changes: Change[]): Promise<Change[]> => {
     canPickMany: true,
   };
 
-  // @ts-ignore
+  // @ts-ignore - ~_~
   const picks: vscode.QuickPickItem[] = await vscode.window.showQuickPick(
     castChangesToQuickPickItems(changes, cwd),
     pickOptions
   );
 
-  if (!picks) {
-    return [];
+  if (picks === undefined) {
+    throw new Error("Input escaped, commit cancelled.");
   }
 
   for (const pick of picks) {
