@@ -17,7 +17,10 @@ export const commit = (
 
   return async () => {
     if (czCodeConfig.addBeforeCommit) {
-      await add(git)();
+      const addResult: boolean = await add(git)();
+
+      // Cancel prompts if escaped
+      if (addResult === false) return;
     }
 
     let commitMessage: string = "";
