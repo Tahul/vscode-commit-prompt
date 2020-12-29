@@ -24,16 +24,14 @@ The format must be the following:
 ```json
 {
   "config": {
-    "cz-emoji": {
-      ...configKeys
-    }
+    "cz-emoji": {}
   }
 }
 ```
 
 ### Config keys
 
-- _scopes_ (optional):
+#### _scopes_ (optional)
 
 Scopes is a text input by default, allowing you to define a custom scope on each commit.
 
@@ -59,14 +57,13 @@ export interface CzScopeType {
           "name": "the-next-big-feature",
           "description": "Use this scope when working on our next big feature"
         }
-        // Your scopes here
       ]
     }
   }
 }
 ```
 
-- _types_ (optional):
+#### _types_ (optional)
 
 If you specify this key in config, the default types will be overwritten by yours completely.
 
@@ -94,14 +91,13 @@ interface CzEmojiType {
           "description": "Updating the UI.",
           "name": "ui"
         }
-        // Your types here
       ]
     }
   }
 }
 ```
 
-- _questions_ (optional):
+#### _questions_ (optional)
 
 Specifying `questions` key will result in overwriting the complete default scenario.
 
@@ -138,11 +134,9 @@ export interface Question {
               "description": "Updating the UI.",
               "name": "ui"
             }
-            // Your types here
           ],
           "format": "({value})"
         }
-        // Your questions here
       ]
     }
   }
