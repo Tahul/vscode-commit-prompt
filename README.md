@@ -15,7 +15,7 @@ This [demo](https://i.imgur.com/r0DnW2j.gif) shows a simple commit, with the def
 
 You can also find a demo of the `cz-emoji` preset [here](https://i.imgur.com/KdhQncO.gif).
 
-![Demo](https://i.imgur.com/r0DnW2j.gif)
+![Demo conventional-commits](https://i.imgur.com/r0DnW2j.gif?raw=true)
 
 ## ⌨️ Keybindings
 
