@@ -13,6 +13,25 @@ This demo shows a simple commit, with the default setup you will get after insta
 
 ![Demo](https://i.imgur.com/Q3FuQ5X.gif)
 
+## ⌨️ Keybindings
+
+The default keybinding for `Commit` command is `Cmd+Y`.
+
+The default keybinding is the following:
+
+```json
+{
+  "command": "vscode-cz-emoji.commit",
+  "key": "ctrl+y",
+  "mac": "cmd+y",
+  "when": "editorTextFocus"
+}
+```
+
+You can edit it from your own vscode keybindings settings using the key `vscode-cz-emoji.commit`.
+
+You can also add a key for the `Add` command only using `vscode-cz-emoji.add`.
+
 ## ⚙️ Config
 
 The config can be specified from 3 places:
@@ -144,3 +163,11 @@ export interface Question {
   }
 }
 ```
+
+## 👨‍💻 Credits
+
+This VSCode app has been written by [Yaël GUILLOUX](https://twitter.com/yaeeelglx).
+
+This has been heavily inspired by [cz-emoji](https://github.com/ngryman/cz-emoji) by [ngryman](https://github.com/ngryman).
+
+If you have any question concerning this app, don't hesitate to reach me, on [Twitter](https://twitter.com/yaeeelglx) or by [email](mailto:yael.guilloux@gmail.com).
