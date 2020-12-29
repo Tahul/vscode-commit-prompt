@@ -11,6 +11,8 @@ Commit faster and cleaner with [cz-emoji](https://github.com/ngryman/cz-emoji) s
 
 This demo shows a simple commit, with the default setup you will get after installing the extension.
 
+![Demo]()
+
 ## ⚙️ Config
 
 The config can be specified from 3 places:
