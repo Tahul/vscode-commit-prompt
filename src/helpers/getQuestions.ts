@@ -1,15 +1,29 @@
-import { CzEmojiConfig } from "../config";
+import { CommitPromptCodeConfig, CommitPromptConfig } from "../config";
 import defaultQuestions, { Question } from "./defaultQuestion";
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.
  *
- * @param czConfig CzEmojiConfig
+ * @param cpConfig CommitPromptConfig
  */
-export const getQuestions = (czConfig: CzEmojiConfig): Question[] => {
-  const questions: Question[] = !czConfig.questions
-    ? defaultQuestions(czConfig)
-    : czConfig.questions;
+export const getQuestions = (
+  cpConfig: CommitPromptConfig,
+  cpCodeConfig: CommitPromptCodeConfig
+): Question[] => {
+  const questions: Question[] = !cpConfig.questions
+    ? defaultQuestions(cpConfig)
+    : cpConfig.questions;
+
+  // Set subject maxLength from config
+  if (cpCodeConfig.subjectLength) {
+    const subjectIndex = questions.findIndex(
+      (question: Question) => question.name === "subject"
+    );
+
+    if (subjectIndex > -1) {
+      questions[subjectIndex].maxLength = cpCodeConfig.subjectLength;
+    }
+  }
 
   return questions;
 };

@@ -1,11 +1,13 @@
-import { CzEmojiConfig, CzEmojiType } from "../config";
+import { CommitPromptConfig, CommitPromptType } from "../config";
 
 /**
- * Default types from cz-emoji.
+ * Default types from commit-prompt.
  */
-export const defaultTypes = (czConfig: CzEmojiConfig): CzEmojiType[] => {
-  if (czConfig.types) {
-    return czConfig.types;
+export const defaultTypes = (
+  cpConfig: CommitPromptConfig
+): CommitPromptType[] => {
+  if (cpConfig.types) {
+    return cpConfig.types;
   }
 
   const types = [

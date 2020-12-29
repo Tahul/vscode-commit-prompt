@@ -1,18 +1,18 @@
 import * as vscode from "vscode";
 import ask from "./ask";
-import { CzEmojiType, CzScopeType } from "../config";
+import { CommitPromptType, CpScopeType } from "../config";
 import { Question } from "./defaultQuestion";
 
 /**
- * Cast an Emoji Type from cz-emoji into a QuickPickItem from VSCode.
+ * Cast an Emoji Type from commit-prompt into a QuickPickItem from VSCode.
  *
- * @param emojiTypes CzEmojiType[]
+ * @param emojiTypes CommitPromptType[]
  */
 const castTypesToQuickPickItems = (
-  emojiTypes: CzEmojiType[]
+  emojiTypes: CommitPromptType[]
 ): vscode.QuickPickItem[] => {
   return emojiTypes.map(
-    (emojiType: CzEmojiType): vscode.QuickPickItem => {
+    (emojiType: CommitPromptType): vscode.QuickPickItem => {
       return {
         label: emojiType.code,
         description: `${emojiType.emoji} | ${emojiType.description} (${emojiType.name})`,
@@ -22,15 +22,15 @@ const castTypesToQuickPickItems = (
 };
 
 /**
- * Cast a Scope Type from cz-emoji into a QuickPickItem from VSCode.
+ * Cast a Scope Type from commit-prompt into a QuickPickItem from VSCode.
  *
  * @param scopes
  */
 const castScopesToQuickPickItems = (
-  scopes: CzScopeType[]
+  scopes: CpScopeType[]
 ): vscode.QuickPickItem[] => {
   return scopes.map(
-    (scope: CzScopeType): vscode.QuickPickItem => {
+    (scope: CpScopeType): vscode.QuickPickItem => {
       return {
         label: scope.name,
         description: scope.description,

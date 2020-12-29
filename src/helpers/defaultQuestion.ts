@@ -1,27 +1,27 @@
-import { config } from "process";
-import { CzEmojiConfig, CzEmojiType, CzScopeType } from "../config";
+import { CommitPromptConfig, CommitPromptType, CpScopeType } from "../config";
 import { defaultTypes } from "./defaultTypes";
 
 export interface Question {
   name: string;
   type: "oneOf" | "input";
   placeHolder: string;
-  emojiTypes?: CzEmojiType[];
-  scopes?: CzScopeType[];
+  emojiTypes?: CommitPromptType[];
+  scopes?: CpScopeType[];
   format?: string;
+  maxLength?: number;
 }
 
 /**
- * Default questions from cz-emoji
+ * Default questions from commit-prompt
  */
-export const defaultQuestions = (czConfig: CzEmojiConfig): Question[] => {
-  const configTypes = czConfig?.types;
-  const types: CzEmojiType[] = configTypes
+export const defaultQuestions = (cpConfig: CommitPromptConfig): Question[] => {
+  const configTypes = cpConfig?.types;
+  const types: CommitPromptType[] = configTypes
     ? configTypes
-    : defaultTypes(czConfig);
+    : defaultTypes(cpConfig);
 
-  const configScopes = czConfig?.scopes;
-  const scopes: CzScopeType[] | undefined = configScopes
+  const configScopes = cpConfig?.scopes;
+  const scopes: CpScopeType[] | undefined = configScopes
     ? configScopes
     : undefined;
 

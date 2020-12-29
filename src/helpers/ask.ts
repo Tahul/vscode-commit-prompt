@@ -16,6 +16,16 @@ export const ask = async (
     prompt: currentValue,
   };
 
+  if (question.maxLength && question.maxLength !== undefined) {
+    options.validateInput = (input: string) => {
+      if (question.maxLength && input.length > question.maxLength) {
+        return `This input cannot be longer than ${question.maxLength}`;
+      }
+
+      return null;
+    };
+  }
+
   const input = await vscode.window.showInputBox(options);
 
   if (input === undefined) {
