@@ -34,14 +34,12 @@
       {
         "command": "vscode-commit-prompt.commit",
         "key": "ctrl+y",
-        "mac": "cmd+y",
-        "when": "editorTextFocus"
+        "mac": "cmd+y"
       },
       {
         "command": "vscode-commit-prompt.add",
         "key": "",
-        "mac": "",
-        "when": "editorTextFocus"
+        "mac": ""
       }
     ],
     "commands": [
