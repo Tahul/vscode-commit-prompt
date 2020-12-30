@@ -32,7 +32,7 @@ export const generateCommands = (
     },
     {
       reference: "add",
-      command: add(git),
+      command: add(git, cpCodeConfig),
     },
   ];
 

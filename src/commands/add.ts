@@ -1,4 +1,6 @@
+import * as vscode from "vscode";
 import { CommandCallback } from ".";
+import { CommitPromptCodeConfig } from "../config";
 import askMultiple from "../helpers/askMultiple";
 import { getCurrentChanges } from "../helpers/getCurrentChanges";
 import { gitAdd } from "../helpers/gitAdd";
@@ -12,14 +14,20 @@ import { API as GitAPI, Change, Repository } from "../typings/git";
  *
  * @param git GitAPI
  */
-export const add = (git: GitAPI): CommandCallback => {
+export const add = (
+  git: GitAPI,
+  cpCodeConfig: CommitPromptCodeConfig
+): CommandCallback => {
   return async () => {
     let picks: Change[] = [];
 
     try {
       picks = await askMultiple(await getCurrentChanges(git));
     } catch (e) {
-      console.log("Cancelling adding!");
+      if (cpCodeConfig.showOutputChannel === "always") {
+        console.log("Cancelling adding!");
+      }
+
       return false;
     }
 
