@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import ask from "../helpers/ask";
 import askOneOf from "../helpers/askOneOf";
 import getQuestions from "../helpers/getQuestions";
@@ -34,15 +35,23 @@ export const commit = (
           commitMessage += await ask(question, commitMessage);
         }
       } catch (e) {
-        console.log("Cancelling commit!");
+        if (["onError", "always"].includes(cpCodeConfig.showOutputChannel)) {
+          console.log("Cancelling commit!");
+        }
+
         return;
       }
     }
 
-    console.log("Commiting:\n");
-    console.log(commitMessage);
+    if (cpCodeConfig.showOutputChannel === "always") {
+      console.log("Commiting:\n");
+      console.log(commitMessage);
+    }
 
     await gitCommit(commitMessage);
+
+    // Await for sync after commit so the change list gets updated.
+    await vscode.commands.executeCommand("git.sync");
   };
 };
 
