@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { Change, Status } from "../typings/git";
+import { IndexChange } from "./getCurrentChanges";
 
 /**
  * Cast Change[] from vscode-git into a QuickPickItem[] from VSCode.
@@ -7,14 +8,16 @@ import { Change, Status } from "../typings/git";
  * @param changes Change[]
  * @param cwd string
  */
-const castChangesToQuickPickItems = (
-  changes: Change[],
+const castIndexChangesToQuickPickItems = (
+  changes: IndexChange[],
   cwd: string
 ): vscode.QuickPickItem[] => {
   return changes.map(
-    (change: Change): vscode.QuickPickItem => {
+    (change: IndexChange): vscode.QuickPickItem => {
       return {
         label: change.uri.path.replace(cwd, ""),
+        description:
+          change.type === "index" ? "Staged changes" : "Working tree",
         picked: [
           Status.INDEX_MODIFIED,
           Status.INDEX_ADDED,
@@ -34,7 +37,9 @@ const castChangesToQuickPickItems = (
  *
  * @param changes
  */
-export const askMultiple = async (changes: Change[]): Promise<Change[]> => {
+export const askMultiple = async (
+  changes: IndexChange[]
+): Promise<Change[]> => {
   // @ts-ignore - get cwd
   const cwd: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
   const addedChanges: Change[] = [];
@@ -48,7 +53,7 @@ export const askMultiple = async (changes: Change[]): Promise<Change[]> => {
 
   // @ts-ignore - ~_~
   const picks: vscode.QuickPickItem[] = await vscode.window.showQuickPick(
-    castChangesToQuickPickItems(changes, cwd),
+    castIndexChangesToQuickPickItems(changes, cwd),
     pickOptions
   );
 
