@@ -17,7 +17,7 @@ export const commit = (
 
   return async () => {
     if (cpCodeConfig.addBeforeCommit) {
-      const addResult: boolean = await add(git)();
+      const addResult: boolean = await add(git, cpCodeConfig)();
 
       // Cancel prompts if escaped
       if (addResult === false) return;
