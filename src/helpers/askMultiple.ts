@@ -13,18 +13,17 @@ const castIndexChangesToQuickPickItems = (
   cwd: string
 ): vscode.QuickPickItem[] => {
   return changes.map(
-    (change: IndexChange): vscode.QuickPickItem => {
+    (file: IndexChange): vscode.QuickPickItem => {
       return {
-        label: change.uri.path.replace(cwd, ""),
-        description:
-          change.type === "index" ? "Staged changes" : "Working tree",
+        label: file.change.uri.path.replace(cwd, ""),
+        description: file.type === "index" ? "Staged changes" : "Working tree",
         picked: [
           Status.INDEX_MODIFIED,
           Status.INDEX_ADDED,
           Status.ADDED_BY_US,
           Status.ADDED_BY_THEM,
           Status.BOTH_ADDED,
-        ].includes(change.status),
+        ].includes(file.change.status),
       };
     }
   );
@@ -62,13 +61,13 @@ export const askMultiple = async (
   }
 
   for (const pick of picks) {
-    const changeFromPick = changes.find((change: Change): boolean => {
-      const uri = change.uri.path.replace(cwd, "");
+    const changeFromPick = changes.find((file: IndexChange): boolean => {
+      const uri = file.change.uri.path.replace(cwd, "");
       return pick.label === uri;
     });
 
     if (changeFromPick) {
-      addedChanges.push(changeFromPick);
+      addedChanges.push(changeFromPick.change);
     }
   }
 
