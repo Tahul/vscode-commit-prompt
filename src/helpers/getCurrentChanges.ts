@@ -1,7 +1,8 @@
 import { API as GitAPI, Change, Repository } from "../typings/git";
 
-export interface IndexChange extends Change {
+export interface IndexChange {
   type: "index" | "working";
+  change: Change;
 }
 
 /**
@@ -21,13 +22,13 @@ export const getCurrentChanges = async (
   const changes: IndexChange[] = [
     ...indexChanges.map<IndexChange>((change: any) => {
       return {
-        ...change,
+        change,
         type: "index",
       };
     }),
     ...workingTreeChanges.map<IndexChange>((change: any) => {
       return {
-        ...change,
+        change,
         type: "working",
       };
     }),
