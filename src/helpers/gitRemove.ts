@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
-import { API as GitAPI, Change, Repository } from "../typings/git";
-import * as cp from "child_process";
-import * as fs from "fs";
+import * as cp from "child_process"
+import * as fs from "fs"
+import * as vscode from "vscode"
+import { API as GitAPI, Change, Repository } from "../typings/git"
 
 export const gitRemove = async (
   git: GitAPI,
@@ -9,11 +9,11 @@ export const gitRemove = async (
   change: Change
 ): Promise<void> => {
   // @ts-ignore - get cwd
-  const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+  const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath
 
-  const cwd = fs.realpathSync(rootPath);
+  const cwd = fs.realpathSync(rootPath)
 
-  cp.execSync(`git reset ${change.uri.path}`, { cwd });
-};
+  cp.execSync(`git reset ${change.uri.path}`, { cwd })
+}
 
-export default gitRemove;
+export default gitRemove

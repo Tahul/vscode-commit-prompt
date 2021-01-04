@@ -1,8 +1,8 @@
 import {
   CommitPromptCodeConfig,
   CommitPromptConfig,
-  CommitPromptType,
-} from "../config";
+  CommitPromptType
+} from "../config"
 
 /**
  * Default types from commit-prompt.
@@ -12,7 +12,7 @@ export const defaultTypes = (
   cpCodeConfig: CommitPromptCodeConfig
 ): CommitPromptType[] => {
   if (cpConfig.types) {
-    return cpConfig.types;
+    return cpConfig.types
   }
 
   const types: CommitPromptType[] =
@@ -477,7 +477,7 @@ export const defaultTypes = (
             description: "Reverts a previous commit",
             name: "reverts",
           },
-        ];
+        ]
 
-  return types;
-};
+  return types
+}

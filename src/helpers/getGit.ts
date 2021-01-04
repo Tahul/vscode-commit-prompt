@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
-import { API as GitAPI, GitExtension } from "../typings/git.d";
+import * as vscode from "vscode"
+import { API as GitAPI, GitExtension } from "../typings/git.d"
 
 /**
  * Return the editor Git instance.
@@ -7,15 +7,15 @@ import { API as GitAPI, GitExtension } from "../typings/git.d";
 export const getGit = (): GitAPI | undefined => {
   const gitExtension = vscode.extensions.getExtension<GitExtension>(
     "vscode.git"
-  )?.exports;
+  )?.exports
 
   if (!gitExtension) {
-    return undefined;
+    return undefined
   }
 
-  const api: GitAPI = gitExtension.getAPI(1);
+  const api: GitAPI = gitExtension.getAPI(1)
 
-  return api;
-};
+  return api
+}
 
-export default getGit;
+export default getGit

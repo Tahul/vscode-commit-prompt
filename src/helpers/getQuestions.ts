@@ -1,5 +1,5 @@
-import { CommitPromptCodeConfig, CommitPromptConfig } from "../config";
-import defaultQuestions, { Question } from "./defaultQuestion";
+import { CommitPromptCodeConfig, CommitPromptConfig } from "../config"
+import defaultQuestions, { Question } from "./defaultQuestion"
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.
@@ -12,20 +12,20 @@ export const getQuestions = (
 ): Question[] => {
   const questions: Question[] = !cpConfig.questions
     ? defaultQuestions(cpConfig, cpCodeConfig)
-    : cpConfig.questions;
+    : cpConfig.questions
 
   // Set subject maxLength from config
   if (cpCodeConfig.subjectLength) {
     const subjectIndex = questions.findIndex(
       (question: Question) => question.name === "subject"
-    );
+    )
 
     if (subjectIndex > -1) {
-      questions[subjectIndex].maxLength = cpCodeConfig.subjectLength;
+      questions[subjectIndex].maxLength = cpCodeConfig.subjectLength
     }
   }
 
-  return questions;
-};
+  return questions
+}
 
-export default getQuestions;
+export default getQuestions

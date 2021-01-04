@@ -2,18 +2,18 @@ import {
   CommitPromptCodeConfig,
   CommitPromptConfig,
   CommitPromptType,
-  CpScopeType,
-} from "../config";
-import { defaultTypes } from "./defaultTypes";
+  CpScopeType
+} from "../config"
+import { defaultTypes } from "./defaultTypes"
 
 export interface Question {
-  name: string;
-  type: "oneOf" | "input";
-  placeHolder: string;
-  emojiTypes?: CommitPromptType[];
-  scopes?: CpScopeType[];
-  format?: string;
-  maxLength?: number;
+  name: string
+  type: "oneOf" | "input"
+  placeHolder: string
+  emojiTypes?: CommitPromptType[]
+  scopes?: CpScopeType[]
+  format?: string
+  maxLength?: number
 }
 
 /**
@@ -23,15 +23,15 @@ export const defaultQuestions = (
   cpConfig: CommitPromptConfig,
   cpCodeConfig: CommitPromptCodeConfig
 ): Question[] => {
-  const configTypes = cpConfig?.types;
+  const configTypes = cpConfig?.types
   const types: CommitPromptType[] = configTypes
     ? configTypes
-    : defaultTypes(cpConfig, cpCodeConfig);
+    : defaultTypes(cpConfig, cpCodeConfig)
 
-  const configScopes = cpConfig?.scopes;
+  const configScopes = cpConfig?.scopes
   const scopes: CpScopeType[] | undefined = configScopes
     ? configScopes
-    : undefined;
+    : undefined
 
   const questions: Question[] = [
     {
@@ -65,9 +65,9 @@ export const defaultQuestions = (
       type: "input",
       format: "\n\nIssues: {value}", // Break 2 lines for issues
     },
-  ];
+  ]
 
-  return questions;
-};
+  return questions
+}
 
-export default defaultQuestions;
+export default defaultQuestions

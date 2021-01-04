@@ -1,6 +1,6 @@
-import * as vscode from "vscode";
-import { Change, Status } from "../typings/git";
-import { IndexChange } from "./getCurrentChanges";
+import * as vscode from "vscode"
+import { Change, Status } from "../typings/git"
+import { IndexChange } from "./getCurrentChanges"
 
 /**
  * Cast Change[] from vscode-git into a QuickPickItem[] from VSCode.
@@ -24,10 +24,10 @@ const castIndexChangesToQuickPickItems = (
           Status.ADDED_BY_THEM,
           Status.BOTH_ADDED,
         ].includes(file.change.status),
-      };
+      }
     }
-  );
-};
+  )
+}
 
 /**
  * Ask to pick between multiple file changes from Git current tree.
@@ -40,38 +40,41 @@ export const askMultiple = async (
   changes: IndexChange[]
 ): Promise<Change[]> => {
   // @ts-ignore - get cwd
-  const cwd: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
-  const addedChanges: Change[] = [];
+  const cwd: string = vscode.workspace.workspaceFolders[0].uri.fsPath
+  const addedChanges: Change[] = []
   const pickOptions: vscode.QuickPickOptions = {
     placeHolder: "Add files",
     ignoreFocusOut: true,
     matchOnDescription: true,
     matchOnDetail: true,
     canPickMany: true,
-  };
+    onDidSelectItem: (item: vscode.QuickPickItem) => {
+      
+    }
+  }
 
   // @ts-ignore - ~_~
   const picks: vscode.QuickPickItem[] = await vscode.window.showQuickPick(
     castIndexChangesToQuickPickItems(changes, cwd),
-    pickOptions
-  );
+    pickOptions,
+  )
 
   if (picks === undefined) {
-    throw new Error("Input escaped, commit cancelled.");
+    throw new Error("Input escaped, commit cancelled.")
   }
 
   for (const pick of picks) {
     const changeFromPick = changes.find((file: IndexChange): boolean => {
-      const uri = file.change.uri.path.replace(cwd, "");
-      return pick.label === uri;
-    });
+      const uri = file.change.uri.path.replace(cwd, "")
+      return pick.label === uri
+    })
 
     if (changeFromPick) {
-      addedChanges.push(changeFromPick.change);
+      addedChanges.push(changeFromPick.change)
     }
   }
 
-  return addedChanges as Change[];
-};
+  return addedChanges as Change[]
+}
 
-export default askMultiple;
+export default askMultiple

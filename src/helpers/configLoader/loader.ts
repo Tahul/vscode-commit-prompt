@@ -1,7 +1,7 @@
-import * as path from "path";
+import * as path from "path"
+import findup from "./findup"
+import getContent from "./getContent"
 
-import findup from "./findup";
-import getContent from "./getContent";
 
 /**
  * Command line config helpers
@@ -19,12 +19,12 @@ import getContent from "./getContent";
  * @return {Object|undefined}
  */
 const loader = (configs: string[], config: string | null, cwd: string) => {
-  var content;
-  var directory = cwd || process.cwd();
+  var content
+  var directory = cwd || process.cwd()
 
   // If config option is given, attempt to load it
   if (config) {
-    return getContent(config, directory);
+    return getContent(config, directory)
   }
 
   const findConfig: string | undefined = findup(
@@ -32,18 +32,18 @@ const loader = (configs: string[], config: string | null, cwd: string) => {
     { nocase: true, cwd: directory },
     (configPath: string) => {
       if (path.basename(configPath) === "package.json") {
-        return !!getContent(configPath, directory);
+        return !!getContent(configPath, directory)
       }
 
-      return true;
+      return true
     }
-  );
+  )
 
-  content = findConfig ? getContent(findConfig, directory) : [];
+  content = findConfig ? getContent(findConfig, directory) : []
 
   if (content) {
-    return content;
+    return content
   }
-};
+}
 
-export default loader;
+export default loader

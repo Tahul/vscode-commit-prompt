@@ -1,8 +1,8 @@
-import { API as GitAPI, Change, Repository } from "../typings/git";
+import { API as GitAPI, Change, Repository } from "../typings/git"
 
 export interface IndexChange {
-  type: "index" | "working";
-  change: Change;
+  type: "index" | "working"
+  change: Change
 }
 
 /**
@@ -13,26 +13,26 @@ export interface IndexChange {
 export const getCurrentChanges = async (
   git: GitAPI
 ): Promise<IndexChange[]> => {
-  const repo: Repository = git.repositories[0];
+  const repo: Repository = git.repositories[0]
 
-  const indexChanges: Change[] = repo.state.indexChanges;
+  const indexChanges: Change[] = repo.state.indexChanges
 
-  const workingTreeChanges: Change[] = repo.state.workingTreeChanges;
+  const workingTreeChanges: Change[] = repo.state.workingTreeChanges
 
   const changes: IndexChange[] = [
     ...indexChanges.map<IndexChange>((change: any) => {
       return {
         change,
         type: "index",
-      };
+      }
     }),
     ...workingTreeChanges.map<IndexChange>((change: any) => {
       return {
         change,
         type: "working",
-      };
+      }
     }),
-  ];
+  ]
 
-  return changes;
-};
+  return changes
+}

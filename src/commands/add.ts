@@ -1,11 +1,10 @@
-import * as vscode from "vscode";
-import { CommandCallback } from ".";
-import { CommitPromptCodeConfig } from "../config";
-import askMultiple from "../helpers/askMultiple";
-import { getCurrentChanges } from "../helpers/getCurrentChanges";
-import { gitAdd } from "../helpers/gitAdd";
-import { gitRemove } from "../helpers/gitRemove";
-import { API as GitAPI, Change, Repository } from "../typings/git";
+import { CommandCallback } from "."
+import { CommitPromptCodeConfig } from "../config"
+import askMultiple from "../helpers/askMultiple"
+import { getCurrentChanges } from "../helpers/getCurrentChanges"
+import { gitAdd } from "../helpers/gitAdd"
+import { gitRemove } from "../helpers/gitRemove"
+import { API as GitAPI, Change, Repository } from "../typings/git"
 
 /**
  * Show a multi pick prompt with modified files.
@@ -19,41 +18,41 @@ export const add = (
   cpCodeConfig: CommitPromptCodeConfig
 ): CommandCallback => {
   return async () => {
-    let picks: Change[] = [];
+    let picks: Change[] = []
 
     try {
-      picks = await askMultiple(await getCurrentChanges(git));
+      picks = await askMultiple(await getCurrentChanges(git))
     } catch (e) {
       if (cpCodeConfig.showOutputChannel === "always") {
-        console.log("Cancelling adding!");
+        console.log("Cancelling adding!")
       }
 
-      return false;
+      return false
     }
 
-    const repo: Repository = git.repositories[0];
+    const repo: Repository = git.repositories[0]
 
     // Get added changes
-    const { indexChanges } = repo.state;
+    const { indexChanges } = repo.state
 
     // Remove unpicked files
     for (const change of indexChanges) {
       if (
         !picks.find((pickedChange: Change): boolean => {
-          return pickedChange.uri.fsPath === change.uri.fsPath;
+          return pickedChange.uri.fsPath === change.uri.fsPath
         })
       ) {
-        await gitRemove(git, repo, change);
+        await gitRemove(git, repo, change)
       }
     }
 
     // Add picked ones
     for (const pick of picks) {
-      await gitAdd(git, repo, pick);
+      await gitAdd(git, repo, pick)
     }
 
-    return true;
-  };
-};
+    return true
+  }
+}
 
-export default add;
+export default add

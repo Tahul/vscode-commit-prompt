@@ -1,10 +1,10 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as stripJSONComments from "strip-json-comments";
-import * as stripBom from "strip-bom";
-import * as isUTF8 from "is-utf8";
+import * as fs from "fs"
+import * as isUTF8 from "is-utf8"
+import * as path from "path"
+import * as stripBom from "strip-bom"
+import * as stripJSONComments from "strip-json-comments"
+import getNormalizedConfig from "./getNormalizedConfig"
 
-import getNormalizedConfig from "./getNormalizedConfig";
 
 /**
  * Read the content of a configuration file
@@ -14,28 +14,28 @@ import getNormalizedConfig from "./getNormalizedConfig";
  * @return {Object}
  */
 function readConfigContent(configPath: string) {
-  const parsedPath = path.parse(configPath);
-  const isRcFile = parsedPath.ext !== ".js" && parsedPath.ext !== ".json";
-  const jsonString = readConfigFileContent(configPath);
+  const parsedPath = path.parse(configPath)
+  const isRcFile = parsedPath.ext !== ".js" && parsedPath.ext !== ".json"
+  const jsonString = readConfigFileContent(configPath)
   const parse = isRcFile
     ? (contents: string) => JSON.parse(stripJSONComments(contents))
-    : (contents: string) => JSON.parse(contents);
+    : (contents: string) => JSON.parse(contents)
 
   try {
-    const parsed = parse(jsonString);
+    const parsed = parse(jsonString)
 
     Object.defineProperty(parsed, "configPath", {
       value: configPath,
-    });
+    })
 
-    return parsed;
+    return parsed
   } catch (error) {
     error.message = [
       `Parsing JSON at ${configPath} for commitizen config failed:`,
       error.mesasge,
-    ].join("\n");
+    ].join("\n")
 
-    throw error;
+    throw error
   }
 }
 
@@ -47,19 +47,19 @@ function readConfigContent(configPath: string) {
  */
 const getConfigContent = (configPath: string, baseDirectory: string) => {
   if (!configPath) {
-    return;
+    return
   }
 
-  const resolvedPath = path.resolve(baseDirectory, configPath);
-  const configBasename = path.basename(resolvedPath);
+  const resolvedPath = path.resolve(baseDirectory, configPath)
+  const configBasename = path.basename(resolvedPath)
 
   if (!fs.existsSync(resolvedPath)) {
-    return getNormalizedConfig(resolvedPath);
+    return getNormalizedConfig(resolvedPath)
   }
 
-  const content = readConfigContent(resolvedPath);
-  return getNormalizedConfig(configBasename, content);
-};
+  const content = readConfigContent(resolvedPath)
+  return getNormalizedConfig(configBasename, content)
+}
 
 /**
  * Read proper content from config file.
@@ -68,15 +68,15 @@ const getConfigContent = (configPath: string, baseDirectory: string) => {
  * @return {String}
  */
 const readConfigFileContent = (configPath: string) => {
-  let rawBufContent = fs.readFileSync(configPath);
+  let rawBufContent = fs.readFileSync(configPath)
 
   if (!isUTF8(rawBufContent)) {
     throw new Error(
       `The config file at "${configPath}" contains invalid charset, expect utf8`
-    );
+    )
   }
 
-  return stripBom(rawBufContent.toString("utf8"));
-};
+  return stripBom(rawBufContent.toString("utf8"))
+}
 
-export default getConfigContent;
+export default getConfigContent
