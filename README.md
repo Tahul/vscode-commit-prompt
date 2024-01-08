@@ -13,7 +13,7 @@ Commit and manage issues **faster** and **cleaner** with keybound **prompts** fo
 
 ### Committing
 
-![Demo](./docs/commit.mp4)
+![Demo](./docs/commit.gif)
 
 All actions that relates to committing code (add, push, commit, undo) resolves around `Cmd+Y` by default.
 
@@ -96,7 +96,7 @@ Allows to discard the changes (`git reset --hard HEAD^`).
 
 ### Issues
 
-![Demo](./docs/issue.mp4)
+![Demo](./docs/issue.gif)
 
 All actions that relates to GitHub issues resolves around `Cmd+U` by default.
 
