@@ -59,10 +59,10 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
     result.label = question.format.replace('{value}', result.label)
   }
   if (question?.suffix) {
-    result.label = result + question.suffix
+    result.label = result?.label + question.suffix
   }
   if (question?.prefix) {
-    result.label = question.prefix + result
+    result.label = question.prefix + result?.label
   }
 
   return result
