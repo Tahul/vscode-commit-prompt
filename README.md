@@ -1,6 +1,6 @@
 # ⛏ vscode-commit-prompt
 
-![VS Marketplace Badge](https://vsmarketplacebadge.apphb.com/version-short/yaelguilloux.vscode-commit-prompt.svg)
+![VS Marketplace Badge](./docs/vscode-commit-prompt.png)
 
 Commit and manage issues **faster** and **cleaner** with keybound **prompts** for VS Code.
 
