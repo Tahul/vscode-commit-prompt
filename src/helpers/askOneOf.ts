@@ -1,41 +1,23 @@
 import * as vscode from "vscode"
 import { CommitPromptType, CpScopeType } from "../config"
 import ask from "./ask"
-import { Question } from "./defaultQuestion"
+import { Question } from "./defaultCommitQuestions"
 
 /**
  * Cast an Emoji Type from commit-prompt into a QuickPickItem from VSCode.
  *
- * @param emojiTypes CommitPromptType[]
+ * @param prompts CommitPromptType[]
  */
-const castTypesToQuickPickItems = (
-  emojiTypes: CommitPromptType[]
+const castPromptsToQuickPickItems = (
+  prompts: CommitPromptType[]
 ): vscode.QuickPickItem[] => {
-  return emojiTypes.map(
-    (emojiType: CommitPromptType): vscode.QuickPickItem => {
+  return prompts.map(
+    (prompt: CommitPromptType): vscode.QuickPickItem => {
       return {
-        label: emojiType.code,
-        description: `${emojiType?.emoji ? `${emojiType.emoji} | ` : ``}${
-          emojiType.description
-        } (${emojiType.name})`,
-      }
-    }
-  )
-}
-
-/**
- * Cast a Scope Type from commit-prompt into a QuickPickItem from VSCode.
- *
- * @param scopes
- */
-const castScopesToQuickPickItems = (
-  scopes: CpScopeType[]
-): vscode.QuickPickItem[] => {
-  return scopes.map(
-    (scope: CpScopeType): vscode.QuickPickItem => {
-      return {
-        label: scope.name,
-        description: scope.description,
+        label: prompt.code,
+        description: `${prompt?.emoji ? `${prompt.emoji} | ` : ``}${
+          prompt.description
+        } (${prompt.name})`,
       }
     }
   )
@@ -46,46 +28,45 @@ const castScopesToQuickPickItems = (
  *
  * @param question Question
  */
-export const askOneOf = async (question: Question): Promise<string> => {
+export const askOneOf = async (question: Question): Promise<vscode.QuickPickItem> => {
   let quickpickItems: vscode.QuickPickItem[] = []
 
   // No types nor scopes, return a plain input
-  if (!question.emojiTypes && !question.scopes) {
+  if (!question.prompts && !question.scopes) {
     return await ask(question)
   }
 
   // Add emoji types to quickpick
-  if (question.emojiTypes) {
-    quickpickItems = castTypesToQuickPickItems(question.emojiTypes)
-  }
-
-  // Add scopes to quickpick
-  if (question.scopes) {
-    quickpickItems = [
-      ...quickpickItems,
-      ...castScopesToQuickPickItems(question.scopes),
-    ]
+  if (question.prompts) {
+    quickpickItems = castPromptsToQuickPickItems(question.prompts)
   }
 
   const pickOptions: vscode.QuickPickOptions = {
-    placeHolder: question.placeHolder,
+    title: question?.title,
+    placeHolder: question?.placeHolder,
     ignoreFocusOut: true,
     matchOnDescription: true,
     matchOnDetail: true,
   }
 
-  const pick = await vscode.window.showQuickPick(quickpickItems, pickOptions)
+  let result: vscode.QuickPickItem | undefined = await vscode.window.showQuickPick(quickpickItems, pickOptions)
 
-  if (pick === undefined) {
+  if (result === undefined) {
     throw new Error("Input escaped, commit cancelled.")
   }
 
   // Return formatted question result
-  if (question.format) {
-    return question.format.replace("{value}", pick.label)
+  if (question?.format && result) {
+    result.label = question.format.replace("{value}", result.label)
+  }
+  if (question?.suffix) {
+    result.label = result + question.suffix
+  }
+  if (question?.prefix) {
+    result.label = question.prefix + result
   }
 
-  return pick.label
+  return result
 }
 
 export default askOneOf

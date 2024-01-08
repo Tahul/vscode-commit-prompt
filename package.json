@@ -2,7 +2,7 @@
   "name": "vscode-commit-prompt",
   "displayName": "vscode-commit-prompt",
   "description": "⛏ VSCode keybound formatted commit prompt.",
-  "version": "1.1.6",
+  "version": "2.0.0",
   "publisher": "yaelguilloux",
   "repository": "https://github.com/Tahul/vscode-commit-prompt",
   "license": "LICENSE",
@@ -24,10 +24,6 @@
     "SCM Providers",
     "Linters"
   ],
-  "activationEvents": [
-    "onCommand:vscode-commit-prompt.commit",
-    "onCommand:vscode-commit-prompt.add"
-  ],
   "main": "./dist/extension.js",
   "contributes": {
     "keybindings": [
@@ -38,8 +34,38 @@
       },
       {
         "command": "vscode-commit-prompt.add",
-        "key": "",
-        "mac": ""
+        "key": "shift+alt+ctrl+y",
+        "mac": "shift+alt+cmd+y"
+      },
+      {
+        "command": "vscode-commit-prompt.push",
+        "key": "shift+ctrl+y",
+        "mac": "shift+cmd+y"
+      },
+      {
+        "command": "vscode-commit-prompt.undo",
+        "key": "alt+ctrl+y",
+        "mac": "alt+cmd+y"
+      },
+      {
+        "command": "vscode-commit-prompt.open",
+        "key": "ctrl+u",
+        "mac": "cmd+u"
+      },
+      {
+        "command": "vscode-commit-prompt.close",
+        "key": "shift+ctrl+u",
+        "mac": "shift+cmd+u"
+      },
+      {
+        "command": "vscode-commit-prompt.assign",
+        "key": "alt+ctrl+u",
+        "mac": "alt+cmd+u"
+      },
+      {
+        "command": "vscode-commit-prompt.unassign",
+        "key": "shift+alt+ctrl+u",
+        "mac": "shift+alt+cmd+u"
       }
     ],
     "commands": [
@@ -50,6 +76,30 @@
       {
         "command": "vscode-commit-prompt.add",
         "title": "commit-prompt: Add"
+      },
+      {
+        "command": "vscode-commit-prompt.undo",
+        "title": "commit-prompt: Undo"
+      },
+      {
+        "command": "vscode-commit-prompt.push",
+        "title": "commit-prompt: Push"
+      },
+      {
+        "command": "vscode-commit-prompt.assign",
+        "title": "commit-prompt: Assign issue"
+      },
+      {
+        "command": "vscode-commit-prompt.unassign",
+        "title": "commit-prompt: Unassign issue"
+      },
+      {
+        "command": "vscode-commit-prompt.open",
+        "title": "commit-prompt: Open issue"
+      },
+      {
+        "command": "vscode-commit-prompt.close",
+        "title": "commit-prompt: Close issue"
       }
     ],
     "configuration": {
@@ -72,17 +122,36 @@
         "commit-prompt.showOutputChannel": {
           "type": "string",
           "enum": [
-            "off",
-            "always",
-            "onError"
+            "status",
+            "popup",
+            "none"
           ],
-          "default": "onError",
-          "description": "Open the output panel after commit."
+          "default": "status",
+          "description": "The extension preferred output channel after commit."
         },
         "commit-prompt.addBeforeCommit": {
           "type": "boolean",
           "default": true,
           "description": "Always show git add prompt before writing your commit."
+        },
+        "commit-prompt.pushAfterCommit": {
+          "type": "boolean",
+          "default": false,
+          "description": "Always push after a commit."
+        },
+        "commit-prompt.githubToken": {
+          "type": "string",
+          "description": "Queries the GitHub API to find issues for the Issues step of your commit."
+        },
+        "commit-prompt.autoAssignOpenedIssues": {
+          "type": "boolean",
+          "description": "Automatically assign yourself to any opened issues.",
+          "default": true
+        },
+        "commit-prompt.githubPerPage": {
+          "type": "number",
+          "description": "The amount of issues to fetch per page. The smaller the faster your prompts will feel.",
+          "default": 25
         }
       }
     }
@@ -91,36 +160,29 @@
     "vscode.git"
   ],
   "scripts": {
-    "vscode:prepublish": "yarn run package",
-    "compile": "webpack --config ./build/node-extension.webpack.config.js",
     "dev": "webpack --watch --config ./build/node-extension.webpack.config.js",
+    "build": "webpack --config ./build/node-extension.webpack.config.js",
+    "vscode:prepublish": "yarn run package",
     "package": "webpack --mode production --devtool hidden-source-map --config ./build/node-extension.webpack.config.js",
-    "test-compile": "tsc -p ./",
-    "test-watch": "tsc -watch -p ./",
-    "pretest": "yarn run test-compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.3",
-    "@types/mocha": "^8.0.4",
-    "@types/node": "^12.11.7",
-    "@types/vscode": "^1.52.0",
-    "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/parser": "^4.9.0",
-    "eslint": "^7.15.0",
-    "glob": "^7.1.6",
-    "mocha": "^8.1.3",
-    "prettier": "^2.2.1",
-    "ts-loader": "^8.0.11",
-    "typescript": "^4.1.2",
-    "vscode-test": "^1.4.1",
-    "webpack": "^5.10.0",
-    "webpack-cli": "^4.2.0"
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.10.7",
+    "@types/vscode": "^1.85.0",
+    "eslint": "^8.56.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@antfu/eslint-config": "^2.6.2",
     "is-utf8": "^0.2.1",
-    "strip-bom": "^4.0.0",
-    "strip-json-comments": "^3.1.1"
+    "octokit": "^3.1.2",
+    "strip-bom": "^5.0.0",
+    "strip-json-comments": "^5.0.1"
   }
 }

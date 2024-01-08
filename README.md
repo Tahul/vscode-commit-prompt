@@ -2,39 +2,176 @@
 
 ![VS Marketplace Badge](https://vsmarketplacebadge.apphb.com/version-short/yaelguilloux.vscode-commit-prompt.svg)
 
-Commit **faster** and **cleaner** with keybound formatted **commit prompt** for VS Code.
+Commit and manage issues **faster** and **cleaner** with keybound **prompts** for VS Code.
 
-- ⌨ Add & commit multiple files without using your mouse once.
+- 🕹️ Add & commit multiple files without using your mouse once.
 - 💄 Improve your git history with two strong default presets.
-- ⚙ Specify your own questions, types, scopes from a simple config file.
-- ✅ Based on the well known [commitizen](https://github.com/commitizen/cz-cli) and [Conventional Commits](https://www.conventionalcommits.org/).
+- 👥 Specify your own questions, types, scopes and share them with your team.
+- ✅ Minimalist approach to GitHub issues management from VS Code quick prompts.
 
 ## 🎮 Demo
 
-This [demo](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif) shows a simple commit, with the default setup you will get after installing the extension, with the `conventional-commits` preset.
-
-You can also find a demo of the `cz-emoji` preset [here](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo_emoji.gif).
-
 ![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif?raw=true)
 
-## ⌨️ Keybindings
+## ⌨️ Actions
 
-The default keybinding for `Commit` command is `Cmd+Y`.
+### Committing
 
-The default keybinding is the following:
+All actions that relates to committing code (add, push, commit, undo) resolves around `Cmd+Y` by default.
 
-```json
-{
-  "command": "vscode-commit-prompt.commit",
-  "key": "ctrl+y",
-  "mac": "cmd+y",
-  "when": "editorTextFocus"
-}
-```
+- `cmd+y` => commit
+- `shift+cmd+y` => push
+- `alt+cmd+y` => undo
+- `shift+alt+cmd+y` => add
 
-You can edit it from your own vscode keybindings settings using the key `vscode-commit-prompt.commit`.
+#### Commit
 
-You can also add a key for the `Add` command only using `vscode-commit-prompt.add`.
+Opens the `Commit` prompt.
+
+Prompts for `Add` beforehand if you enabled [`addBeforeCommit`].
+
+Prompt for resolvable closable GitHub issues if you enabled [`githubToken`].
+
+Push after your commit if you enabled [`pushAfterCommit`].
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.commit",
+    "key": "ctrl+y",
+    "mac": "cmd+y"
+  }
+  ```
+
+#### Add
+
+Opens the `Add` prompt.
+
+Show changes from current working tree and allow you to add them individually.
+
+Allows to add `all` (`git add ${workspaceRoot}`) with first prompt item.
+
+Will `rm` unchecked files from the staged files.
+
+Will be prompted in `Commit` flow with [`addBeforeCommit`], you usually won't need this keybinding.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.add",
+    "key": "shift+alt+ctrl+y",
+    "mac": "shift+alt+cmd+y"
+  }
+  ```
+
+#### Push
+
+Opens the `Push` prompt.
+
+Shows the list of commits that will be pushed.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.push",
+    "key": "shift+ctrl+y",
+    "mac": "shift+cmd+y"
+  }
+  ```
+
+#### Undo
+
+Open the `Undo` prompt.
+
+Allows to undo the last commit and keep the changes (`git reset --soft HEAD^`).
+
+Allows to discard the changes (`git reset --hard HEAD^`).
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.undo",
+    "key": "alt+ctrl+y",
+    "mac": "alt+cmd+y" // Alt is Option on Mac 😉
+  }
+  ```
+
+### Issues
+
+All actions that relates to GitHub issues resolves around `Cmd+U` by default.
+
+Any action related to GitHub issues will need you to provide `githubToken`.
+
+If you do not provide it or the extension fails to gather your issues, it will silently fail, and let you keep using the commit features.
+
+- `cmd+u` => open
+- `shift+cmd+u` => close
+- `alt+cmd+u` => assign
+- `shift+alt+cmd+u` => unassign
+
+#### Open
+
+Open issues on GitHub.
+
+Allows to create a new minimal issue with a similar shape as a commit.
+
+Lists open issues on GitHub and orders between assigned and unassigned issues.
+
+You can toggle if new issues gets auto-assigned to you using [`autoAssignOpenedIssues`].
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.open",
+    "key": "ctrl+u",
+    "mac": "cmd+u"
+  }
+  ```
+
+#### Close
+
+Close open issues from GitHub.
+
+Lists open issues on GitHub and orders between assigned and unassigned issues.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.close",
+    "key": "shift+ctrl+u",
+    "mac": "shimft+cmd+u"
+  }
+  ```
+
+#### Assign
+
+Self-assign open issues from GitHub.
+
+Lists open issues that are not assigned to you.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.assign",
+    "key": "alt+ctrl+u",
+    "mac": "alt+cmd+u"
+  }
+  ```
+
+#### Unassign
+
+Self-unassign open issues from GitHub.
+
+Lists open issues that are assigned to you.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.unassign",
+    "key": "shift+alt+ctrl+u",
+    "mac": "shift+alt+cmd+u"
+  }
+  ```
 
 ## ⚙️ Config
 
@@ -60,13 +197,13 @@ The format must be the following:
 }
 ```
 
-> I recommend you to use the package.json config key.
+> If you are willing to share settings like `scopes` with your team, I recommend you to use the package.json config key or `.vscode/settings.json`.
 
-### VSCode settings
+### 👤 VSCode settings
 
 VSCode settings exposes four parameters:
 
-#### Preset `commit-prompt.addBeforeCommit`
+#### Preset `commit-prompt.preset`
 
 You can choose between `conventional-commits` and `cz-emoji`.
 
@@ -81,9 +218,15 @@ Default: `conventional-commits`.
 
 #### Add Before Commit `commit-prompt.addBeforeCommit`
 
-Whether or not you want the extension to show the `add` each team you hit the `commit` command.
+Whether or not you want the extension to show the `add` prompt before each commit.
 
 Default: `true`
+
+#### Push After Commit `commit-prompt.pushAfterCommit`
+
+Whether or not your want the extension to `git push` after each commit.
+
+Default: `false`
 
 #### Subject Length `commit-prompt.subjectLength`
 
@@ -95,11 +238,12 @@ Default: `75`
 
 Show the output channel when you commit.
 
-This allows three values: `onError`, `off`, `always`.
+Supports:
+- `status`: will output messages in your [VSCode Status Bar](https://code.visualstudio.com/api/ux-guidelines/status-bar).
+- `popup`: will output messages in [VSCode Information Messages]().
+- `none`: will make the extension fully silent.
 
-Default: `onError`
-
-### Per repository config
+### 👥 Per repository config
 
 Per repository config exposes three parameters: `scopes`, `types` and `questions`.
 
@@ -107,7 +251,7 @@ Per repository config exposes three parameters: `scopes`, `types` and `questions
 
 Scopes is a text input by default, allowing you to define a custom scope on each commit.
 
-If you want to lock scopes, and specify a list, you can by using the `scope` attribute from config.
+If you want to lock scopes, and specify a list, you can by using the `scopes` attribute from config.
 
 Specify a list of scope, and you will be prompted to chose between them on each commit.
 
@@ -184,7 +328,7 @@ export interface Question {
   name: string;
   type: "oneOf" | "input";
   placeHolder: string;
-  emojiTypes?: CommitPromptType[];
+  prompts?: CommitPromptType[];
   scopes?: CpScopeType[];
   format?: string;
 }
@@ -199,7 +343,7 @@ export interface Question {
           "name": "type",
           "placeHolder": "Select the type of change you are committing (type)",
           "type": "oneOf",
-          "emojiTypes": [
+          "prompts": [
             {
               "emoji": "💄",
               "code": ":lipstick:",
@@ -214,6 +358,18 @@ export interface Question {
   }
 }
 ```
+
+You can take a look at the [default commit questions](./src/helpers/defaultCommitQuestions.ts) for further customization.
+
+## ⁉️ Why?
+
+[I](https://github.com/Tahul) would like to improve my *commit* / *issues* flow that currently is source of friction to my code sessions.
+
+Switching between my _issues tracker_, my _code editor_ and the _Git CLI_ is the flow that takes most of my time outside of coding.
+
+Also, I'm used to sending giant commits and that causes me pain everytime I review my git history.
+
+This aims to be a minimal, fast and efficient way to improve my workflow and reduce friction. Maybe it could be yours too?
 
 ## 👨‍💻 Credits
 

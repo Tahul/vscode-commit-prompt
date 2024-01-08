@@ -1,6 +1,7 @@
 import * as vscode from "vscode"
 import loader from "./helpers/configLoader/loader"
-import { Question } from "./helpers/defaultQuestion"
+import { Question } from "./helpers/defaultCommitQuestions"
+import { getCwd } from "./helpers/getCwd"
 
 export const EXTENSION_NAME = "vscode-commit-prompt"
 
@@ -26,7 +27,8 @@ export interface CommitPromptType {
 
 export interface CommitPromptConfig {
   types?: CommitPromptType[]
-  questions?: Question[]
+  commitQuestions?: Question[]
+  issueQuestions?: Question[]
   scopes?: CpScopeType[]
 }
 
@@ -38,21 +40,21 @@ export interface CpConfig {
 
 export interface CommitPromptCodeConfig {
   subjectLength: number
-  showOutputChannel: "off" | "always" | "onError"
+  showOutputChannel: "status" | "popup" | "none"
   addBeforeCommit: boolean
+  pushAfterCommit: boolean
   preset: "conventional-commits" | "cz-emoji"
+  githubToken?: string
+  githubPerPage?: number
+  autoAssignOpenedIssues?: boolean
 }
 
 export const getCpConfig = (): CommitPromptConfig => {
-  if (
-    !vscode.workspace ||
-    !vscode.workspace.workspaceFolders ||
-    !vscode.workspace.workspaceFolders[0]
-  ) {
+  const projectRoot = getCwd()
+
+  if (!projectRoot) {
     return {}
   }
-
-  const projectRoot = vscode.workspace.workspaceFolders[0].uri.fsPath
 
   // Configuration sources in priority order.
   const configs = [".cprc", ".cp.json", "package.json"]

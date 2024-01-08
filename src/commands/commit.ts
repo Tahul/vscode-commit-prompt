@@ -1,57 +1,81 @@
 import * as vscode from "vscode"
 import { CommandCallback } from "."
-import { CommitPromptCodeConfig, CommitPromptConfig } from "../config"
 import ask from "../helpers/ask"
 import askOneOf from "../helpers/askOneOf"
-import getQuestions from "../helpers/getQuestions"
+import getCommitQuestions from "../helpers/getCommitQuestions"
 import gitCommit from "../helpers/gitCommit"
-import { API as GitAPI } from "../typings/git"
+import gitPush from '../helpers/gitPush'
 import add from "./add"
+import { CommitPromptExtensionContext } from "../extension"
+import askMultiple from "../helpers/askMultiple"
 
-export const commit = (
-  git: GitAPI,
-  cpConfig: CommitPromptConfig,
-  cpCodeConfig: CommitPromptCodeConfig
-): CommandCallback => {
-  const questions = getQuestions(cpConfig, cpCodeConfig)
-
+export const commit = (extensionContext: CommitPromptExtensionContext): CommandCallback => {
   return async () => {
-    if (cpCodeConfig.addBeforeCommit) {
-      const addResult: boolean = await add(git, cpCodeConfig)()
+    const { cpCodeConfig, outputMessage } = extensionContext
+
+    const questions = await getCommitQuestions(extensionContext)
+    
+    if (cpCodeConfig?.addBeforeCommit) {
+      const addResult: boolean = await add(extensionContext)()
 
       // Cancel prompts if escaped
-      if (addResult === false) {return}
+      if (addResult === false) { return }
     }
 
     let commitMessage: string = ""
 
     for (const question of questions) {
       try {
+        let result: vscode.QuickPickItem | undefined
+
         if (question.type === "oneOf") {
-          commitMessage += await askOneOf(question)
+          result = await askOneOf(question)
         }
 
         if (question.type === "input") {
-          commitMessage += await ask(question, commitMessage)
+          result = await ask(question, commitMessage)
+        }
+
+        if (result) {
+          commitMessage += result?.label
+          continue
+        }
+
+        if (question.name === 'issues' && question.type === 'multiple' && question.items) {
+          const picks = await askMultiple(question.items, question)
+          let resolvedResult: string = question?.format || ''
+          if (question?.format) {
+            resolvedResult = resolvedResult.replace("{value}", picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+          }
+          if (question?.suffix) {
+            resolvedResult = resolvedResult + question?.suffix
+          }
+          if (question?.prefix) {
+            resolvedResult = question?.prefix + resolvedResult
+          }
+          commitMessage += resolvedResult
         }
       } catch (e) {
-        if (["onError", "always"].includes(cpCodeConfig.showOutputChannel)) {
-          console.log("Cancelling commit!")
-        }
+        outputMessage("Cancelling commit!")
 
         return
       }
     }
 
-    if (cpCodeConfig.showOutputChannel === "always") {
-      console.log("Commiting:\n")
-      console.log(commitMessage)
+    try {
+      await gitCommit(commitMessage)
+  
+      // Await for sync after commit so the change list gets updated.
+      await vscode.commands.executeCommand("git.refresh")
+  
+      if (cpCodeConfig?.pushAfterCommit) {
+        await gitPush()
+      }
+
+      outputMessage('Successfully commited: ' + commitMessage)
+    } catch (e) {
+      outputMessage('Could not commit: ' + commitMessage)
     }
-
-    await gitCommit(commitMessage)
-
-    // Await for sync after commit so the change list gets updated.
-    await vscode.commands.executeCommand("git.sync")
   }
 }
 

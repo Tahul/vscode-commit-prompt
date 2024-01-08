@@ -1,8 +1,8 @@
 import * as fs from "fs"
 import * as isUTF8 from "is-utf8"
 import * as path from "path"
-import * as stripBom from "strip-bom"
-import * as stripJSONComments from "strip-json-comments"
+import stripBom from "strip-bom"
+import stripJSONComments from "strip-json-comments"
 import getNormalizedConfig from "./getNormalizedConfig"
 
 
@@ -29,7 +29,7 @@ function readConfigContent(configPath: string) {
     })
 
     return parsed
-  } catch (error) {
+  } catch (error: any) {
     error.message = [
       `Parsing JSON at ${configPath} for commitizen config failed:`,
       error.mesasge,
