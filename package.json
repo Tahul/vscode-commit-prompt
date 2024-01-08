@@ -169,7 +169,7 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/node": "^20.10.7",
-    "@types/vscode": "^1.85.0",
+    "@types/vscode": "^1.80.0",
     "eslint": "^8.56.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
