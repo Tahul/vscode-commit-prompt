@@ -1,10 +1,10 @@
 import * as vscode from 'vscode'
-import type { CommitPromptType } from '../config'
+import type { CommitPromptType, CommitPromptScopeType } from '../config'
 import ask from './ask'
 import type { Question } from './defaultCommitQuestions'
 
 /**
- * Cast an Emoji Type from commit-prompt into a QuickPickItem from VSCode.
+ * Cast an prompt from commit-prompt into a QuickPickItem from VSCode.
  */
 function castPromptsToQuickPickItems(prompts: CommitPromptType[]): vscode.QuickPickItem[] {
   return prompts.map(
@@ -30,9 +30,14 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
     return await ask(question)
   }
 
-  // Add emoji types to quickpick
+  // Add prompts types to quickpick
   if (question.prompts) {
     quickpickItems = castPromptsToQuickPickItems(question.prompts)
+  }
+
+  // Add scopes to quickpick
+  if (question.scopes) {
+    quickpickItems = question.scopes
   }
 
   const pickOptions: vscode.QuickPickOptions = {

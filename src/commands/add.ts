@@ -21,7 +21,7 @@ function getFileTypeName(type: IndexChangeType) {
 }
 
 /**
- * Cast Change[] from vscode-git into a QuickPickItem[] from VSCode.
+ * Cast Change[] into a vscode.QuickPickItem[].
  */
 function castIndexChangesToQuickPickItems(changes: IndexChange[], cwd: string): vscode.QuickPickItem[] {
   const rawChanges: vscode.QuickPickItem[] = [

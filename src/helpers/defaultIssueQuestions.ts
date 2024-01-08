@@ -2,7 +2,7 @@ import type {
   CommitPromptCodeConfig,
   CommitPromptConfig,
   CommitPromptType,
-  CpScopeType,
+  CommitPromptScopeType,
 } from '../config'
 import { defaultTypes } from './defaultTypes'
 
@@ -12,7 +12,7 @@ export interface Question {
   placeHolder: string
   title?: string
   prompts?: CommitPromptType[]
-  scopes?: CpScopeType[]
+  scopes?: CommitPromptScopeType[]
   format?: string
   maxLength?: number
   required?: boolean
@@ -24,13 +24,9 @@ export interface Question {
  * Default questions from commit-prompt
  */
 export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig): Question[] {
-  const configTypes = cpConfig?.types
+  const types: CommitPromptType[] =  cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
 
-  const types: CommitPromptType[] = configTypes || defaultTypes(cpConfig, cpCodeConfig)
-
-  const configScopes = cpConfig?.scopes
-
-  const scopes: CpScopeType[] | undefined = configScopes || undefined
+  const scopes: CommitPromptScopeType[] | undefined = cpCodeConfig?.scopes || cpConfig?.scopes
 
   const questions: Question[] = [
     {

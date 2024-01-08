@@ -8,9 +8,9 @@ import defaultIssueQuestions from './defaultIssueQuestions'
 export function getIssueQuestions(extensionContext: CommitPromptExtensionContext): Question[] {
   const { cpCodeConfig, cpConfig } = extensionContext
 
-  const questions: Question[] = !cpConfig.issueQuestions
+  const questions: Question[] = !cpConfig.issueQuestions && !cpCodeConfig.issueQuestions
     ? defaultIssueQuestions(cpConfig, cpCodeConfig)
-    : cpConfig.issueQuestions
+    : cpCodeConfig.issueQuestions || cpConfig.issueQuestions || []
 
   // Set subject maxLength from config
   if (cpCodeConfig.subjectLength) {

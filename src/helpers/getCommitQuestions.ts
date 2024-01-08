@@ -81,13 +81,9 @@ export async function getCommitQuestions(extensionContext: CommitPromptExtension
       ),
       ...allIssues,
     ]
-
-    console.log(issuesItems)
   }
 
-  const questions: Question[] = !cpConfig.commitQuestions
-    ? defaultCommitQuestions(cpConfig, cpCodeConfig, issuesItems)
-    : cpConfig.commitQuestions
+  const questions: Question[] = cpConfig?.commitQuestions || cpCodeConfig?.commitQuestions || defaultCommitQuestions(cpConfig, cpCodeConfig, issuesItems)
 
   // Set subject maxLength from config
   if (cpCodeConfig.subjectLength) {

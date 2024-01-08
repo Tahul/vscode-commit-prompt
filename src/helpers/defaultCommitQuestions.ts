@@ -3,7 +3,7 @@ import type {
   CommitPromptCodeConfig,
   CommitPromptConfig,
   CommitPromptType,
-  CpScopeType,
+  CommitPromptScopeType,
 } from '../config'
 import { defaultTypes } from './defaultTypes'
 
@@ -14,7 +14,7 @@ export interface Question {
   title?: string
   prompts?: CommitPromptType[]
   items?: vscode.QuickPickItem[] | undefined
-  scopes?: CpScopeType[]
+  scopes?: CommitPromptScopeType[]
   format?: string
   maxLength?: number
   required?: boolean
@@ -26,13 +26,11 @@ export interface Question {
  * Default questions from commit-prompt
  */
 export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig, issuesItems: vscode.QuickPickItem[] | undefined = undefined): Question[] {
-  const defaultCommitTypes: CommitPromptType[] = cpConfig?.types
-    ? cpConfig?.types
-    : defaultTypes(cpConfig, cpCodeConfig)
+  const defaultCommitTypes: CommitPromptType[] = cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
 
-  const configScopes = cpConfig?.scopes
+  const configScopes = cpCodeConfig?.scopes || cpConfig?.scopes
 
-  const scopes: CpScopeType[] | undefined = configScopes || undefined
+  const scopes: CommitPromptScopeType[] | undefined = configScopes || undefined
 
   const questions: Question[] = [
     {

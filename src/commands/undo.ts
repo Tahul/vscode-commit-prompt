@@ -8,7 +8,7 @@ import type { CommandCallback } from '.'
  */
 export function undo(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
-    const { cwd } = extensionContext
+    const { cwd, outputMessage } = extensionContext
 
     if (!cwd) { return }
 
@@ -49,7 +49,7 @@ export function undo(extensionContext: CommitPromptExtensionContext): CommandCal
         cp.execSync('git reset --soft HEAD^', { cwd })
       }
       catch (e) {
-        console.log('Could not undo the last commit!')
+        outputMessage('Could not undo the last commit!')
       }
     }
 
@@ -58,7 +58,7 @@ export function undo(extensionContext: CommitPromptExtensionContext): CommandCal
         cp.execSync('git reset --hard HEAD^', { cwd })
       }
       catch (e) {
-        console.log('Could not undo the last commit!')
+        outputMessage('Could not undo the last commit!')
       }
     }
   }

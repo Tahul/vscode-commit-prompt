@@ -256,9 +256,9 @@ If you want to lock scopes, and specify a list, you can by using the `scopes` at
 Specify a list of scope, and you will be prompted to chose between them on each commit.
 
 ```typescript
-const scopes: CpScopeType;
+const scopes: CommitPromptScopeType;
 
-export interface CpScopeType {
+export interface CommitPromptScopeType {
   name: string;
   description: string;
 }
@@ -329,7 +329,7 @@ export interface Question {
   type: "oneOf" | "input";
   placeHolder: string;
   prompts?: CommitPromptType[];
-  scopes?: CpScopeType[];
+  scopes?: CommitPromptScopeType[];
   format?: string;
 }
 ```

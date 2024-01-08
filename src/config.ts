@@ -13,8 +13,8 @@ export type MessageType =
   | 'breaking'
   | 'footer'
 
-export interface CpScopeType {
-  name: string
+export interface CommitPromptScopeType {
+  label: string
   description: string
 }
 
@@ -29,7 +29,7 @@ export interface CommitPromptConfig {
   types?: CommitPromptType[]
   commitQuestions?: Question[]
   issueQuestions?: Question[]
-  scopes?: CpScopeType[]
+  scopes?: CommitPromptScopeType[]
 }
 
 export interface CpConfig {
@@ -38,7 +38,7 @@ export interface CpConfig {
   }
 }
 
-export interface CommitPromptCodeConfig {
+export interface CommitPromptCodeConfig extends CommitPromptConfig {
   subjectLength: number
   showOutputChannel: 'status' | 'popup' | 'none'
   addBeforeCommit: boolean
@@ -70,8 +70,29 @@ export function getCpConfig(): CommitPromptConfig {
 }
 
 export function getVsCodeConfig(): CommitPromptCodeConfig {
-  const config = vscode.workspace
+  const vscodeConfig = vscode.workspace
     .getConfiguration()
     .get<CommitPromptCodeConfig>('commit-prompt')
-  return config!
+  
+  const config = {
+    ...vscodeConfig
+  }
+  
+  if (config?.issueQuestions && !config.issueQuestions.length) {
+    delete config.issueQuestions
+  }
+
+  if (config?.commitQuestions && !config.commitQuestions.length) {
+    delete config.commitQuestions
+  }
+
+  if (config?.types && !config.types.length) {
+    delete config.types
+  }
+
+  if (config?.scopes && !config.scopes.length) {
+    delete config.scopes
+  }
+  
+  return config as CommitPromptCodeConfig
 }

@@ -152,6 +152,26 @@
           "type": "number",
           "description": "The amount of issues to fetch per page. The smaller the faster your prompts will feel.",
           "default": 25
+        },
+        "commit-prompt.commitQuestions": {
+          "description": "Overwrites commits questions from other configuration sources and presets.",
+          "type": "array",
+          "default": []
+        },
+        "commit-prompt.issuesQuestions": {
+          "description": "Overwrites issues questions from other configuration sources and presets.",
+          "type": "array",
+          "default": []
+        },
+        "commit-prompt.scopes": {
+          "description": "Overwrites scopes from other configuration sources and presets.",
+          "type": "array",
+          "default": []
+        },
+        "commit-prompt.types": {
+          "description": "Overwrites types from other configuration sources and presets.",
+          "type": "array",
+          "default": []
         }
       }
     }

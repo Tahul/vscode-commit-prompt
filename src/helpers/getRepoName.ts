@@ -12,8 +12,6 @@ export function getRepoName() {
 
   const match = remoteUrl.match(regex)
 
-  console.log({ match })
-
   if (match && match[1]) {
     return match[1] as `${string}/${string}`
   }

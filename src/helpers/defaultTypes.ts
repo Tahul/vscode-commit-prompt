@@ -8,10 +8,6 @@ import type {
  * Default types from commit-prompt.
  */
 export function defaultTypes(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig): CommitPromptType[] {
-  if (cpConfig.types) {
-    return cpConfig.types
-  }
-
   let types: CommitPromptType[] = [
     {
       code: 'feat',

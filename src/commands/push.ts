@@ -20,8 +20,6 @@ export function push(extensionContext: CommitPromptExtensionContext): CommandCal
       .split('\n')
       .filter(Boolean)
 
-    console.log({ commits })
-
     const items: vscode.QuickPickItem[] = commits.map((commit) => {
       return {
         label: commit,

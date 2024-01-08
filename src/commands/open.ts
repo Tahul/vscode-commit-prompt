@@ -10,7 +10,12 @@ export function open(extensionContext: CommitPromptExtensionContext, page: numbe
   return async () => {
     const { octoKit, user, cwd, repo, cpCodeConfig, outputMessage } = extensionContext
 
-    if (!cwd || !octoKit || !user?.login || !repo) { return }
+    if (!octoKit || !user?.login || !repo) {
+      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.gitHubToken` first.')
+      return
+    }
+
+    if (!cwd) { return }
 
     const issues = await octoKit.request(
       'GET /repos/{owner}/{repo}/issues',
