@@ -1,11 +1,15 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { CommandCallback } from '.'
+import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
 
 /**
  * Shows a prompt to undo the last commit.
  */
-export function unassign(extensionContext: CommitPromptExtensionContext): CommandCallback {
+export function unassign(
+  extensionContext: CommitPromptExtensionContext,
+  page: number | undefined = 1
+): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
 
@@ -27,6 +31,7 @@ export function unassign(extensionContext: CommitPromptExtensionContext): Comman
         direction: 'desc',
         per_page: cpCodeConfig?.githubPerPage || 25,
         assignees: [user.login],
+        page,
       },
     )
 
@@ -39,14 +44,18 @@ export function unassign(extensionContext: CommitPromptExtensionContext): Comman
       return {
         label: issue.title,
         description: issue.number.toString(),
-        detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
+        detail: detailsFromIssue(issue),
       }
     })
 
     const picks = await vscode.window.showQuickPick(
-      issuesAsQuickPickItem,
+      [
+        ...(page > 1 ? [{ label: `Previous page`, description: (page - 1 >= 1 ? page - 1 : 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
+        ...issuesAsQuickPickItem,
+        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', description: (page + 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
+      ],
       {
-        title: 'Unassign myself from issues',
+        title: `Unassign myself from issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,
         ignoreFocusOut: true,
         placeHolder: 'Assign yourself to issues',
@@ -54,6 +63,14 @@ export function unassign(extensionContext: CommitPromptExtensionContext): Comman
     )
 
     if (!picks || !picks.length) { return }
+
+    if (picks.find(pick => pick.label === 'Next page')) {
+      return await unassign(extensionContext, page + 1)()
+    }
+
+    if (picks.find(pick => pick.label === 'Previous page')) {
+      return await unassign(extensionContext, page - 1 >= 1 ? page - 1 : 1)()
+    }
 
     const successFullyUnassigned: string[] = []
     const errorWhileUnassigned: string[] = []

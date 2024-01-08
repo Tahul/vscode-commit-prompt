@@ -5,8 +5,12 @@ import type { CommitPromptExtensionContext } from '../extension'
 import getIssueQuestions from '../helpers/getIssueQuestions'
 import { openInBrowser } from '../helpers/openInBrowser'
 import type { CommandCallback } from '.'
+import { castIssuesAsQuickPickItem } from '../helpers/issueAsQuickPickItem'
 
-export function open(extensionContext: CommitPromptExtensionContext, page: number | undefined = 1): CommandCallback {
+export function open(
+  extensionContext: CommitPromptExtensionContext,
+  page: number | undefined = 1
+): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, cpCodeConfig, outputMessage } = extensionContext
 
@@ -16,6 +20,10 @@ export function open(extensionContext: CommitPromptExtensionContext, page: numbe
     }
 
     if (!cwd) { return }
+
+    console.log({
+      page
+    })
 
     const issues = await octoKit.request(
       'GET /repos/{owner}/{repo}/issues',
@@ -29,13 +37,7 @@ export function open(extensionContext: CommitPromptExtensionContext, page: numbe
       },
     )
 
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = issues.data.map((issue) => {
-      return {
-        label: issue.title,
-        description: issue.number.toString(),
-        detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
-      }
-    })
+    const issuesAsQuickPickItem: vscode.QuickPickItem[] = castIssuesAsQuickPickItem(issues.data)
 
     const pick = await vscode.window.showQuickPick(
       [
@@ -47,12 +49,12 @@ export function open(extensionContext: CommitPromptExtensionContext, page: numbe
           label: '',
           kind: vscode.QuickPickItemKind.Separator,
         } as vscode.QuickPickItem,
-        ...(page > 1 ? [{ label: 'Previous page', iconPath: vscode.ThemeIcon.Folder }] : []),
+        ...(page > 1 ? [{ label: `Previous page`, description: (page - 1 >= 1 ? page - 1 : 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
         ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === 100 ? [{ label: 'Next page', iconPath: vscode.ThemeIcon.Folder }] : []),
+        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', description: (page + 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
       ],
       {
-        title: 'Open issue',
+        title: `Open issue${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: false,
         ignoreFocusOut: true,
         placeHolder: 'Open issues',
@@ -60,11 +62,11 @@ export function open(extensionContext: CommitPromptExtensionContext, page: numbe
     )
 
     if (pick?.label === 'Next page') {
-      return open(extensionContext, page + 1)
+      return await open(extensionContext, page + 1)()
     }
 
     if (pick?.label === 'Previous page') {
-      return open(extensionContext, page - 1 >= 1 ? page - 1 : 1)
+      return await open(extensionContext, page - 1 >= 1 ? page - 1 : 1)()
     }
 
     if (pick && pick?.description) {

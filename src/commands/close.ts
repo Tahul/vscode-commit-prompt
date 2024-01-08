@@ -1,11 +1,15 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { CommandCallback } from '.'
+import { castIssuesAsQuickPickItem } from '../helpers/issueAsQuickPickItem'
 
 /**
  * Shows a prompt to undo the last commit.
  */
-export function close(extensionContext: CommitPromptExtensionContext, page: number | undefined = 1): CommandCallback {
+export function close(
+  extensionContext: CommitPromptExtensionContext,
+  page: number | undefined = 1
+): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
 
@@ -33,22 +37,16 @@ export function close(extensionContext: CommitPromptExtensionContext, page: numb
       return
     }
 
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = issues.data.map((issue) => {
-      return {
-        label: issue.title,
-        description: issue.number.toString(),
-        detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
-      }
-    })
+    const issuesAsQuickPickItem: vscode.QuickPickItem[] = castIssuesAsQuickPickItem(issues.data)
 
     const picks = await vscode.window.showQuickPick(
       [
         ...(page > 1 ? [{ label: 'Previous page', iconPath: vscode.ThemeIcon.Folder }] : []),
         ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === 100 ? [{ label: 'Next page', iconPath: vscode.ThemeIcon.Folder }] : []),
+        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', iconPath: vscode.ThemeIcon.Folder }] : []),
       ],
       {
-        title: 'Close issues',
+        title: `Close issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,
         ignoreFocusOut: true,
         placeHolder: 'Close opened issues',
@@ -58,11 +56,11 @@ export function close(extensionContext: CommitPromptExtensionContext, page: numb
     if (!picks || !picks.length) { return }
 
     if (picks.find(pick => pick.label === 'Next page')) {
-      return close(extensionContext, page + 1)
+      return await close(extensionContext, page + 1)()
     }
 
     if (picks.find(pick => pick.label === 'Previous page')) {
-      return close(extensionContext, page - 1 >= 1 ? page - 1 : 1)
+      return await close(extensionContext, page - 1 >= 1 ? page - 1 : 1)()
     }
 
     const successFullyClosed: string[] = []
