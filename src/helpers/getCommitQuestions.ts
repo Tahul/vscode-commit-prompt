@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { Question } from './defaultCommitQuestions'
 import defaultCommitQuestions from './defaultCommitQuestions'
+import { detailsFromIssue } from './issueAsQuickPickItem'
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.
@@ -27,7 +28,7 @@ export async function getCommitQuestions(extensionContext: CommitPromptExtension
         issue => ({
           label: issue.title,
           description: issue.number.toString(),
-          detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
+          detail: detailsFromIssue(issue),
         }),
       ),
     )
@@ -52,7 +53,7 @@ export async function getCommitQuestions(extensionContext: CommitPromptExtension
             issue => ({
               label: issue.title,
               description: issue.number.toString(),
-              detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
+              detail: detailsFromIssue(issue),
             }),
           ),
       )
