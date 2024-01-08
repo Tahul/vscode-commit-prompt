@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import * as isUTF8 from 'is-utf8'
+import isUTF8 from 'is-utf8'
 import stripBom from 'strip-bom'
 import stripJSONComments from 'strip-json-comments'
 import getNormalizedConfig from './getNormalizedConfig'
