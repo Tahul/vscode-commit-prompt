@@ -28,20 +28,18 @@ export interface Question {
 export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig, issuesItems: vscode.QuickPickItem[] | undefined = undefined): Question[] {
   const defaultCommitTypes: CommitPromptType[] = cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
 
-  const configScopes = cpCodeConfig?.scopes || cpConfig?.scopes
-
-  const scopes: CommitPromptScopeType[] | undefined = configScopes || undefined
+  const scopes: CommitPromptScopeType[] | undefined = [...(cpCodeConfig?.scopes || cpConfig?.scopes || [])]
 
   const questions: Question[] = [
     {
       name: 'type',
-      placeHolder: 'Select the type of change you are committing (type)',
+      placeHolder: 'Select the type of change you are committing',
       type: 'oneOf',
       prompts: defaultCommitTypes,
     },
     {
       name: 'scope',
-      placeHolder: 'Specify a scope (scope)',
+      placeHolder: 'Specify a scope',
       type: scopes ? 'oneOf' : 'input',
       scopes: scopes || undefined,
       format: '({value})',
@@ -49,13 +47,13 @@ export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfi
     },
     {
       name: 'subject',
-      placeHolder: 'Write a short description (subject)',
+      placeHolder: 'Write a short description',
       type: 'input',
       required: true,
     },
     {
       name: 'body',
-      placeHolder: 'Maybe provide a longer description (body)',
+      placeHolder: 'Maybe provide a longer description',
       type: 'input',
       format: '\n\n{value}', // Break 2 lines for body
     },
@@ -63,7 +61,7 @@ export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfi
       issuesItems?.length
         ? {
             name: 'issues',
-            placeHolder: 'List any issue closed (issues)',
+            placeHolder: 'List any issue closed',
             type: 'multiple',
             items: issuesItems,
             format: '\n\nCloses {value}', // Break 2 lines for issues

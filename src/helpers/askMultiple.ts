@@ -32,7 +32,7 @@ export async function askMultiple(items: vscode.QuickPickItem[], question?: Ques
     throw new Error('Input escaped, selection cancelled.')
   }
 
-  return picks
+  return picks.map(pick => ({ ...pick }))
 }
 
 export default askMultiple

@@ -37,22 +37,25 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
 
   // Add scopes to quickpick
   if (question.scopes) {
+    console.log(question.scopes)
     quickpickItems = question.scopes
   }
 
   const pickOptions: vscode.QuickPickOptions = {
-    title: question?.title,
-    placeHolder: question?.placeHolder,
+    title: question?.title || 'Choose one option',
+    placeHolder: question?.placeHolder || 'Select a single option from the list',
     ignoreFocusOut: true,
     matchOnDescription: true,
     matchOnDetail: true,
   }
 
-  const result: vscode.QuickPickItem | undefined = await vscode.window.showQuickPick(quickpickItems, pickOptions)
+  let result: vscode.QuickPickItem | undefined = await vscode.window.showQuickPick(quickpickItems, pickOptions)
 
   if (result === undefined) {
     throw new Error('Input escaped, commit cancelled.')
   }
+
+  result = { ...result }
 
   // Return formatted question result
   if (question?.format && result) {
