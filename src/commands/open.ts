@@ -21,10 +21,6 @@ export function open(
 
     if (!cwd) { return }
 
-    console.log({
-      page
-    })
-
     const issues = await octoKit.request(
       'GET /repos/{owner}/{repo}/issues',
       {

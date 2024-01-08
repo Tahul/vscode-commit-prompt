@@ -37,7 +37,6 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
 
   // Add scopes to quickpick
   if (question.scopes) {
-    console.log(question.scopes)
     quickpickItems = question.scopes
   }
 
