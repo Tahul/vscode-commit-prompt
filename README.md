@@ -9,13 +9,11 @@ Commit and manage issues **faster** and **cleaner** with keybound **prompts** fo
 - 👥 Specify your own questions, types, scopes and share them with your team.
 - ✅ Minimalist approach to GitHub issues management from VS Code quick prompts.
 
-## 🎮 Demo
-
-![conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/docs/demo.gif?raw=true)
-
 ## ⌨️ Actions
 
 ### Committing
+
+![Demo](./docs/commit.mp4)
 
 All actions that relates to committing code (add, push, commit, undo) resolves around `Cmd+Y` by default.
 
@@ -97,6 +95,8 @@ Allows to discard the changes (`git reset --hard HEAD^`).
   ```
 
 ### Issues
+
+![Demo](./docs/issue.mp4)
 
 All actions that relates to GitHub issues resolves around `Cmd+U` by default.
 
