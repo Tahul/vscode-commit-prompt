@@ -1,7 +1,7 @@
-import * as path from "path"
-import findup from "./findup"
-import getContent from "./getContent"
-
+import * as path from 'node:path'
+import process from 'node:process'
+import findup from './findup'
+import getContent from './getContent'
 
 /**
  * Command line config helpers
@@ -14,13 +14,9 @@ import getContent from "./getContent"
 
 /**
  * Get content of the configuration file
- * @param {String} config - partial path to configuration file
- * @param {String} [cwd = process.cwd()] - directory path which will be joined with config argument
- * @return {Object|undefined}
  */
-const loader = (configs: string[], config: string | null, cwd: string) => {
-  var content
-  var directory = cwd || process.cwd()
+function loader(configs: string[], config: string | null, cwd: string) {
+  const directory = cwd || process.cwd()
 
   // If config option is given, attempt to load it
   if (config) {
@@ -31,19 +27,15 @@ const loader = (configs: string[], config: string | null, cwd: string) => {
     configs,
     { nocase: true, cwd: directory },
     (configPath: string) => {
-      if (path.basename(configPath) === "package.json") {
+      if (path.basename(configPath) === 'package.json') {
         return !!getContent(configPath, directory)
       }
 
       return true
-    }
+    },
   )
 
-  content = findConfig ? getContent(findConfig, directory) : []
-
-  if (content) {
-    return content
-  }
+  return findConfig ? getContent(findConfig, directory) : []
 }
 
 export default loader

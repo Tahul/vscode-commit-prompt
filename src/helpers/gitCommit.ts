@@ -1,11 +1,11 @@
-import * as cp from "child_process"
-import * as fs from "fs"
-import { getCwd } from "./getCwd"
+import * as cp from 'node:child_process'
+import * as fs from 'node:fs'
+import { getCwd } from './getCwd'
 
-export const gitCommit = async (message: string): Promise<void> => {
+export async function gitCommit(message: string): Promise<void> {
   const rootPath = getCwd()
 
-  if (!rootPath) {return}
+  if (!rootPath) { return }
 
   const cwd = fs.realpathSync(rootPath)
 

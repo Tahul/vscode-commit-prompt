@@ -1,13 +1,9 @@
-import * as cp from "child_process"
-import * as fs from "fs"
-import { API as GitAPI, Change, Repository } from "../typings/git"
-import { getCwd } from "./getCwd"
+import * as cp from 'node:child_process'
+import * as fs from 'node:fs'
+import type { Change, API as GitAPI, Repository } from '../typings/git'
+import { getCwd } from './getCwd'
 
-export const gitRemove = async (
-  git: GitAPI,
-  repo: Repository,
-  change: Change
-): Promise<void> => {
+export async function gitRemove(git: GitAPI, repo: Repository, change: Change): Promise<void> {
   const rootPath = getCwd()
 
   if (!rootPath) { return }

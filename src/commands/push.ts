@@ -1,16 +1,14 @@
-import * as cp from 'child_process'
-    
+import * as cp from 'node:child_process'
+
 import * as vscode from 'vscode'
-import { CommitPromptExtensionContext } from '../extension'
-import { CommandCallback } from '.'
+import type { CommitPromptExtensionContext } from '../extension'
 import gitPush from '../helpers/gitPush'
+import type { CommandCallback } from '.'
 
 /**
  * Shows a prompt to undo the last commit.
- *
- * @param git GitAPI
  */
-export const push = (extensionContext: CommitPromptExtensionContext): CommandCallback => {
+export function push(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
     const { cwd } = extensionContext
 
@@ -21,10 +19,10 @@ export const push = (extensionContext: CommitPromptExtensionContext): CommandCal
       .toString()
       .split('\n')
       .filter(Boolean)
-    
+
     console.log({ commits })
 
-    const items: vscode.QuickPickItem[] = commits.map(commit => {
+    const items: vscode.QuickPickItem[] = commits.map((commit) => {
       return {
         label: commit,
         picked: true,
@@ -43,22 +41,21 @@ export const push = (extensionContext: CommitPromptExtensionContext): CommandCal
         {
           label: 'Cancel',
           detail: 'Close the prompt',
-          picked: false
+          picked: false,
         },
         {
           label: '',
-          kind: vscode.QuickPickItemKind.Separator
+          kind: vscode.QuickPickItemKind.Separator,
         },
-        ...items
+        ...items,
       ] as vscode.QuickPickItem[],
       {
         title: 'Push 🚀',
         canPickMany: false,
         ignoreFocusOut: true,
-        placeHolder: `Push commits`,
-      }
+        placeHolder: 'Push commits',
+      },
     )
-
 
     if (result && result.label === 'Push') { await gitPush() }
   }

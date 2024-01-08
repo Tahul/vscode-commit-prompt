@@ -1,21 +1,18 @@
-import * as vscode from "vscode"
+import * as vscode from 'vscode'
 import {
-  CommitPromptCodeConfig,
-  CommitPromptConfig,
-  EXTENSION_NAME
-} from "../config"
-import { API as GitAPI } from "../typings/git"
+  EXTENSION_NAME,
+} from '../config'
 
 // Commands
-import add from "./add"
-import commit from "./commit"
-import undo from "./undo"
+import type { CommitPromptExtensionContext } from '../extension'
+import add from './add'
+import commit from './commit'
+import undo from './undo'
 import assign from './assign'
 import push from './push'
 import open from './open'
 import close from './close'
-import unassign from "./unassign"
-import { CommitPromptExtensionContext } from "../extension"
+import unassign from './unassign'
 
 export type CommandCallback = (...args: any[]) => any
 
@@ -24,49 +21,47 @@ export interface CommandReference {
   command: CommandCallback
 }
 
-export const generateCommands = (
-  extensionContext: CommitPromptExtensionContext
-): vscode.Disposable[] => {
+export function generateCommands(extensionContext: CommitPromptExtensionContext): vscode.Disposable[] {
   const disposables: vscode.Disposable[] = []
 
   const commands: CommandReference[] = [
     {
-      reference: "commit",
+      reference: 'commit',
       command: commit(extensionContext),
     },
     {
-      reference: "add",
+      reference: 'add',
       command: add(extensionContext),
     },
     {
-      reference: "undo",
-      command: undo(extensionContext)
+      reference: 'undo',
+      command: undo(extensionContext),
     },
     {
       reference: 'push',
-      command: push(extensionContext)
+      command: push(extensionContext),
     },
     {
       reference: 'assign',
-      command: assign(extensionContext)
+      command: assign(extensionContext),
     },
     {
       reference: 'open',
-      command: open(extensionContext)
+      command: open(extensionContext),
     },
     {
       reference: 'close',
-      command: close(extensionContext)
+      command: close(extensionContext),
     },
     {
       reference: 'unassign',
-      command: unassign(extensionContext)
-    }
+      command: unassign(extensionContext),
+    },
   ]
 
   for (const { reference, command } of commands) {
     disposables.push(
-      vscode.commands.registerCommand(`${EXTENSION_NAME}.${reference}`, command)
+      vscode.commands.registerCommand(`${EXTENSION_NAME}.${reference}`, command),
     )
   }
 

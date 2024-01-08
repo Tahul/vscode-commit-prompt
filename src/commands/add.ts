@@ -1,20 +1,20 @@
-import { CommandCallback } from './'
-import { CommitPromptExtensionContext } from '../extension'
+import * as vscode from 'vscode'
+import type { CommitPromptExtensionContext } from '../extension'
 import askMultiple from '../helpers/askMultiple'
-import { IndexChange, IndexChangeType, getCurrentChanges } from '../helpers/getCurrentChanges'
+import type { IndexChange, IndexChangeType } from '../helpers/getCurrentChanges'
+import { getCurrentChanges } from '../helpers/getCurrentChanges'
 import { gitAdd } from '../helpers/gitAdd'
 import { gitRemove } from '../helpers/gitRemove'
-import { Change, Repository, Status } from '../typings/git'
-import * as vscode from 'vscode'
-import { getCwd } from '../helpers/getCwd'
+import type { Change, Repository } from '../typings/git'
+import { Status } from '../typings/git'
+import type { CommandCallback } from './'
 
-
-const getFileTypeName = (type: IndexChangeType) => {
+function getFileTypeName(type: IndexChangeType) {
   const typesMap = {
     index: 'Staged Changes',
     working: 'Changes',
     merge: 'Merge',
-    untracked: 'Untracked Changes'
+    untracked: 'Untracked Changes',
   }
 
   return typesMap[type]
@@ -22,22 +22,16 @@ const getFileTypeName = (type: IndexChangeType) => {
 
 /**
  * Cast Change[] from vscode-git into a QuickPickItem[] from VSCode.
- *
- * @param changes Change[]
- * @param cwd string
  */
-const castIndexChangesToQuickPickItems = (
-  changes: IndexChange[],
-  cwd: string
-): vscode.QuickPickItem[] => {
+function castIndexChangesToQuickPickItems(changes: IndexChange[], cwd: string): vscode.QuickPickItem[] {
   const rawChanges: vscode.QuickPickItem[] = [
     {
       label: 'Add all',
       description: 'git add .',
       detail: cwd,
       iconPath: vscode.ThemeIcon.Folder,
-      picked: true
-    }
+      picked: true,
+    },
   ]
 
   return [
@@ -60,8 +54,8 @@ const castIndexChangesToQuickPickItems = (
             Status.BOTH_ADDED,
           ].includes(file.change.status),
         }
-      }
-    )
+      },
+    ),
   ]
 }
 
@@ -69,13 +63,11 @@ const castIndexChangesToQuickPickItems = (
  * Show a multi pick prompt with modified files.
  * Picked = added to next commit
  * Unpicked = not added to next commit
- *
- * @param git GitAPI
  */
-export const add = (extensionContext: CommitPromptExtensionContext): CommandCallback => {
+export function add(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
     const { git, outputMessage, cwd } = extensionContext
-    
+
     if (!cwd) { return false }
 
     const repo: Repository = git.repositories[0]
@@ -86,7 +78,7 @@ export const add = (extensionContext: CommitPromptExtensionContext): CommandCall
       const changes = await getCurrentChanges(git)
 
       if (!changes.length) {
-        outputMessage("No current changes!")
+        outputMessage('No current changes!')
         return false
       }
 
@@ -94,7 +86,8 @@ export const add = (extensionContext: CommitPromptExtensionContext): CommandCall
 
       if (picks?.[0]?.description === 'git add .') {
         addedChanges = 'all'
-      } else {
+      }
+      else {
         for (const pick of picks) {
           const changeFromPick = changes.find((file: IndexChange): boolean => {
             return pick.detail === file.change.uri.path
@@ -106,13 +99,13 @@ export const add = (extensionContext: CommitPromptExtensionContext): CommandCall
         }
       }
 
-
       // Skip following code if `all` is picked
       if (addedChanges === 'all') {
         await gitAdd('.')
         return true
       }
-    } catch (e) {
+    }
+    catch (e) {
       outputMessage('Cancelling commit prompt.')
       return false
     }

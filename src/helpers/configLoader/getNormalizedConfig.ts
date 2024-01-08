@@ -1,10 +1,11 @@
-const getNormalizedConfig = (config: string, content?: any) => {
-  if (content && config === "package.json") {
+function getNormalizedConfig(config: string, content?: any) {
+  if (content && config === 'package.json') {
     // Use the npm config key, be good citizens
-    if (content.config && content.config["commit-prompt"]) {
+    if (content.config && content.config['commit-prompt']) {
       return content
     }
-  } else {
+  }
+  else {
     // .cp.json or .cprc
     return content
   }

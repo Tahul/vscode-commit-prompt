@@ -1,12 +1,12 @@
-import * as vscode from "vscode"
-import { API as GitAPI, GitExtension } from "../typings/git.d"
+import * as vscode from 'vscode'
+import type { API as GitAPI, GitExtension } from '../typings/git.d'
 
 /**
  * Return the editor Git instance.
  */
-export const getGit = (): GitAPI | undefined => {
+export function getGit(): GitAPI | undefined {
   const gitExtension = vscode.extensions.getExtension<GitExtension>(
-    "vscode.git"
+    'vscode.git',
   )?.exports
 
   if (!gitExtension) {

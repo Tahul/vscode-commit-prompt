@@ -1,17 +1,18 @@
-import * as vscode from "vscode"
-import * as cp from 'child_process'
-import generateCommands from "./commands"
-import {
+import * as vscode from 'vscode'
+import { Octokit } from 'octokit'
+import generateCommands from './commands'
+import type {
   CommitPromptCodeConfig,
   CommitPromptConfig,
+} from './config'
+import {
   getCpConfig,
-  getVsCodeConfig
-} from "./config"
-import getGit from "./helpers/getGit"
-import { API as GitAPI } from "./typings/git"
-import { Octokit } from "octokit"
-import { getCwd } from "./helpers/getCwd"
-import { getRepoName } from "./helpers/getRepoName"
+  getVsCodeConfig,
+} from './config'
+import getGit from './helpers/getGit'
+import type { API as GitAPI } from './typings/git'
+import { getCwd } from './helpers/getCwd'
+import { getRepoName } from './helpers/getRepoName'
 
 export interface CommitPromptExtensionContext {
   cwd?: string
@@ -20,14 +21,14 @@ export interface CommitPromptExtensionContext {
   cpCodeConfig: CommitPromptCodeConfig
   octoKit?: Octokit
   user?: {
-    login?: string;
-    id?: number;
+    login?: string
+    id?: number
   }
   repo?: `${string}/${string}`
   outputMessage: (msg: string) => Promise<void>
 }
 
-export const activate = (context: vscode.ExtensionContext) => {
+export function activate(context: vscode.ExtensionContext) {
   const extensionContext: CommitPromptExtensionContext = {
     get cwd() {
       return getCwd()
@@ -51,10 +52,23 @@ export const activate = (context: vscode.ExtensionContext) => {
 
         if (extensionContext.cpCodeConfig.showOutputChannel === 'status') {
           vscode.window.setStatusBarMessage(message, 3000)
-          return
         }
       }
-    }
+    },
+  }
+
+  const initOctokit = async () => {
+    if (!extensionContext?.cwd || !extensionContext?.cpCodeConfig?.githubToken) { return }
+    const octoKit = extensionContext.octoKit = new Octokit({
+      auth: extensionContext?.cpCodeConfig?.githubToken,
+    })
+    extensionContext.user = await octoKit.request('GET /user').then(response => response?.data)
+  }
+
+  if (!extensionContext.git) {
+    vscode.window.showErrorMessage(
+      'Cannot find git extension for commit-prompt!',
+    )
   }
 
   const updateConfig = async () => {
@@ -67,20 +81,6 @@ export const activate = (context: vscode.ExtensionContext) => {
     if (previousConfig?.githubToken && extensionContext?.cpCodeConfig?.githubToken !== previousConfig?.githubToken) {
       await initOctokit()
     }
-  }
-
-  const initOctokit = async () => {
-    if (!extensionContext?.cwd || !extensionContext?.cpCodeConfig?.githubToken) { return }
-    const octoKit = extensionContext.octoKit = new Octokit({
-      auth: extensionContext?.cpCodeConfig?.githubToken
-    })
-    extensionContext.user = await octoKit.request('GET /user').then(response => response?.data)
-  }
-
-  if (!extensionContext.git) {
-    vscode.window.showErrorMessage(
-      "Cannot find git extension for commit-prompt!"
-    )
   }
 
   if (extensionContext.cpCodeConfig.githubToken) {
@@ -97,18 +97,18 @@ export const activate = (context: vscode.ExtensionContext) => {
   // Register a configuration change listener
   const configListener = vscode.workspace.onDidChangeConfiguration(async (event) => {
     if (
-      event.affectsConfiguration('commit-prompt.preset') ||
-      event.affectsConfiguration('commit-prompt.subjectLength') ||
-      event.affectsConfiguration('commit-prompt.showOutputChannel') ||
-      event.affectsConfiguration('commit-prompt.addBeforeCommit') ||
-      event.affectsConfiguration('commit-prompt.pushAfterCommit') ||
-      event.affectsConfiguration('commit-prompt.githubToken')
+      event.affectsConfiguration('commit-prompt.preset')
+      || event.affectsConfiguration('commit-prompt.subjectLength')
+      || event.affectsConfiguration('commit-prompt.showOutputChannel')
+      || event.affectsConfiguration('commit-prompt.addBeforeCommit')
+      || event.affectsConfiguration('commit-prompt.pushAfterCommit')
+      || event.affectsConfiguration('commit-prompt.githubToken')
     ) {
       await updateConfig()
     }
-  });
+  })
 
-  context.subscriptions.push(configListener);
+  context.subscriptions.push(configListener)
 }
 
-export const deactivate = () => { }
+export function deactivate() { }

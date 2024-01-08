@@ -1,15 +1,11 @@
-import { CommitPromptExtensionContext } from "../extension"
-import { Question } from "./defaultCommitQuestions"
+import type { CommitPromptExtensionContext } from '../extension'
+import type { Question } from './defaultCommitQuestions'
 import defaultIssueQuestions from './defaultIssueQuestions'
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.
- *
- * @param cpConfig CommitPromptConfig
  */
-export const getIssueQuestions = (
-  extensionContext: CommitPromptExtensionContext
-): Question[] => {
+export function getIssueQuestions(extensionContext: CommitPromptExtensionContext): Question[] {
   const { cpCodeConfig, cpConfig } = extensionContext
 
   const questions: Question[] = !cpConfig.issueQuestions
@@ -19,7 +15,7 @@ export const getIssueQuestions = (
   // Set subject maxLength from config
   if (cpCodeConfig.subjectLength) {
     const subjectIndex = questions.findIndex(
-      (question: Question) => question.name === "subject"
+      (question: Question) => question.name === 'subject',
     )
 
     if (subjectIndex > -1) {

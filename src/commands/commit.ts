@@ -1,20 +1,20 @@
-import * as vscode from "vscode"
-import { CommandCallback } from "."
-import ask from "../helpers/ask"
-import askOneOf from "../helpers/askOneOf"
-import getCommitQuestions from "../helpers/getCommitQuestions"
-import gitCommit from "../helpers/gitCommit"
+import * as vscode from 'vscode'
+import ask from '../helpers/ask'
+import askOneOf from '../helpers/askOneOf'
+import getCommitQuestions from '../helpers/getCommitQuestions'
+import gitCommit from '../helpers/gitCommit'
 import gitPush from '../helpers/gitPush'
-import add from "./add"
-import { CommitPromptExtensionContext } from "../extension"
-import askMultiple from "../helpers/askMultiple"
+import type { CommitPromptExtensionContext } from '../extension'
+import askMultiple from '../helpers/askMultiple'
+import add from './add'
+import type { CommandCallback } from '.'
 
-export const commit = (extensionContext: CommitPromptExtensionContext): CommandCallback => {
+export function commit(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
     const { cpCodeConfig, outputMessage } = extensionContext
 
     const questions = await getCommitQuestions(extensionContext)
-    
+
     if (cpCodeConfig?.addBeforeCommit) {
       const addResult: boolean = await add(extensionContext)()
 
@@ -22,17 +22,17 @@ export const commit = (extensionContext: CommitPromptExtensionContext): CommandC
       if (addResult === false) { return }
     }
 
-    let commitMessage: string = ""
+    let commitMessage: string = ''
 
     for (const question of questions) {
       try {
         let result: vscode.QuickPickItem | undefined
 
-        if (question.type === "oneOf") {
+        if (question.type === 'oneOf') {
           result = await askOneOf(question)
         }
 
-        if (question.type === "input") {
+        if (question.type === 'input') {
           result = await ask(question, commitMessage)
         }
 
@@ -45,7 +45,7 @@ export const commit = (extensionContext: CommitPromptExtensionContext): CommandC
           const picks = await askMultiple(question.items, question)
           let resolvedResult: string = question?.format || ''
           if (question?.format) {
-            resolvedResult = resolvedResult.replace("{value}", picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+            resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
           }
           if (question?.suffix) {
             resolvedResult = resolvedResult + question?.suffix
@@ -55,8 +55,9 @@ export const commit = (extensionContext: CommitPromptExtensionContext): CommandC
           }
           commitMessage += resolvedResult
         }
-      } catch (e) {
-        outputMessage("Cancelling commit!")
+      }
+      catch (e) {
+        outputMessage('Cancelling commit!')
 
         return
       }
@@ -64,17 +65,18 @@ export const commit = (extensionContext: CommitPromptExtensionContext): CommandC
 
     try {
       await gitCommit(commitMessage)
-  
+
       // Await for sync after commit so the change list gets updated.
-      await vscode.commands.executeCommand("git.refresh")
-  
+      await vscode.commands.executeCommand('git.refresh')
+
       if (cpCodeConfig?.pushAfterCommit) {
         await gitPush()
       }
 
-      outputMessage('Successfully commited: ' + commitMessage)
-    } catch (e) {
-      outputMessage('Could not commit: ' + commitMessage)
+      outputMessage(`Successfully commited: ${commitMessage}`)
+    }
+    catch (e) {
+      outputMessage(`Could not commit: ${commitMessage}`)
     }
   }
 }

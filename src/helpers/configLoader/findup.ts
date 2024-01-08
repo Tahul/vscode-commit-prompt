@@ -1,5 +1,5 @@
-import * as glob from "glob"
-import * as path from "path"
+import * as path from 'node:path'
+import * as glob from 'glob'
 
 export interface FindUpOptions {
   nocase: boolean
@@ -7,13 +7,9 @@ export interface FindUpOptions {
   maxDepth?: number
 }
 
-export const findup = (
-  patterns: string[],
-  options: FindUpOptions,
-  fn: (...args: any[]) => {}
-): string | undefined => {
-  var lastpath
-  var file
+export function findup(patterns: string[], options: FindUpOptions, fn: (...args: any[]) => {}): string | undefined {
+  let lastpath
+  let file
 
   options = Object.create(options)
   options.maxDepth = 1
@@ -21,11 +17,13 @@ export const findup = (
 
   do {
     file = patterns.filter((pattern: string) => {
-      var configPath = glob.sync(pattern, options)[0]
+      const configPath = glob.sync(pattern, options)[0]
 
       if (configPath) {
         return fn(path.join(options.cwd, configPath))
       }
+
+      return false
     })[0]
 
     if (file) {
@@ -33,7 +31,7 @@ export const findup = (
     }
 
     lastpath = options.cwd
-    options.cwd = path.resolve(options.cwd, "..")
+    options.cwd = path.resolve(options.cwd, '..')
   } while (options.cwd !== lastpath)
 }
 

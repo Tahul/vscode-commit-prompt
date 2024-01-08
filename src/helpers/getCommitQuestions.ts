@@ -1,52 +1,49 @@
-import { CommitPromptExtensionContext } from "../extension"
-import defaultCommitQuestions, { Question } from "./defaultCommitQuestions"
 import * as vscode from 'vscode'
+import type { CommitPromptExtensionContext } from '../extension'
+import type { Question } from './defaultCommitQuestions'
+import defaultCommitQuestions from './defaultCommitQuestions'
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.
- *
- * @param cpConfig CommitPromptConfig
  */
-export const getCommitQuestions = async (
-  extensionContext: CommitPromptExtensionContext,
-): Promise<Question[]> => {
+export async function getCommitQuestions(extensionContext: CommitPromptExtensionContext): Promise<Question[]> {
   const { cpCodeConfig, cpConfig, user, repo, octoKit } = extensionContext
 
-  let issuesItems: vscode.QuickPickItem[] | undefined = undefined
+  let issuesItems: vscode.QuickPickItem[] | undefined
 
   if (user?.login && repo && octoKit) {
     const assignedIssues = await octoKit.request(
-      `GET /repos/{owner}/{repo}/issues`,
+      'GET /repos/{owner}/{repo}/issues',
       {
         owner: repo.split('/')[0],
         repo: repo.split('/')[1],
         state: 'open',
         direction: 'desc',
         per_page: cpCodeConfig?.githubPerPage || 25,
-        assignees: [user.login]
-      }
+        assignees: [user.login],
+      },
     ).then(
       result => result.data.map(
         issue => ({
           label: issue.title,
           description: issue.number.toString(),
-          detail: issue.assignees?.map(assignee => '@' + assignee.login).join(', '),
-        })
-      )
+          detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
+        }),
+      ),
     )
 
     const assignedIssuesNumbers = assignedIssues.map(assignedIssue => Number(assignedIssue.description))
 
     const allIssues = await octoKit.request(
-      `GET /repos/{owner}/{repo}/issues`,
+      'GET /repos/{owner}/{repo}/issues',
       {
         owner: repo.split('/')[0],
         repo: repo.split('/')[1],
         state: 'open',
         direction: 'desc',
         per_page: cpCodeConfig?.githubPerPage || 25,
-        page: 1
-      }
+        page: 1,
+      },
     )
       .then(result =>
         result.data
@@ -55,28 +52,32 @@ export const getCommitQuestions = async (
             issue => ({
               label: issue.title,
               description: issue.number.toString(),
-              detail: issue.assignees?.map(assignee => '@' + assignee.login).join(', '),
-            })
-          )
+              detail: issue.assignees?.map(assignee => `@${assignee.login}`).join(', '),
+            }),
+          ),
       )
 
     issuesItems = [
       ...(
-        assignedIssues.length > 0 ? [
-          {
-            label: 'Assigned',
-            kind: vscode.QuickPickItemKind.Separator
-          }
-        ] : []
+        assignedIssues.length > 0
+          ? [
+              {
+                label: 'Assigned',
+                kind: vscode.QuickPickItemKind.Separator,
+              },
+            ]
+          : []
       ),
       ...assignedIssues,
       ...(
-        allIssues?.length > 0 ? [
-          {
-            label: 'All',
-            kind: vscode.QuickPickItemKind.Separator
-          }
-        ] : []
+        allIssues?.length > 0
+          ? [
+              {
+                label: 'All',
+                kind: vscode.QuickPickItemKind.Separator,
+              },
+            ]
+          : []
       ),
       ...allIssues,
     ]
@@ -91,7 +92,7 @@ export const getCommitQuestions = async (
   // Set subject maxLength from config
   if (cpCodeConfig.subjectLength) {
     const subjectIndex = questions.findIndex(
-      (question: Question) => question.name === "subject"
+      (question: Question) => question.name === 'subject',
     )
 
     if (subjectIndex > -1) {

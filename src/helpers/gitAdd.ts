@@ -1,11 +1,9 @@
-import * as cp from "child_process"
-import * as fs from "fs"
-import { Change } from "../typings/git"
-import { getCwd } from "./getCwd"
+import * as cp from 'node:child_process'
+import * as fs from 'node:fs'
+import type { Change } from '../typings/git'
+import { getCwd } from './getCwd'
 
-export const gitAdd = async (
-  change: Change | string
-): Promise<void> => {
+export async function gitAdd(change: Change | string): Promise<void> {
   const rootPath = getCwd()
 
   if (!rootPath) { return }

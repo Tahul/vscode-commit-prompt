@@ -1,9 +1,9 @@
-import { API as GitAPI, Change, Repository } from '../typings/git'
-import * as cp from "child_process"
-import { Status } from '../typings/git'
-import * as fs from "fs"
+import * as cp from 'node:child_process'
+import * as fs from 'node:fs'
+import { join } from 'node:path'
 import * as vscode from 'vscode'
-import { join } from 'path'
+import { Status } from '../typings/git'
+import type { Change, API as GitAPI, Repository } from '../typings/git'
 import { getCwd } from './getCwd'
 
 export type IndexChangeType = 'index' | 'working' | 'merge' | 'untracked'
@@ -15,12 +15,8 @@ export interface IndexChange {
 
 /**
  * Return the current branch changes.
- *
- * @param git GitAPI
  */
-export const getCurrentChanges = async (
-  git: GitAPI
-): Promise<IndexChange[]> => {
+export async function getCurrentChanges(git: GitAPI): Promise<IndexChange[]> {
   const rootPath = getCwd()
 
   if (!rootPath) { return [] }
@@ -45,7 +41,7 @@ export const getCurrentChanges = async (
         status: Status.UNTRACKED,
         originalUri: uri,
         uri,
-        renameUri: uri
+        renameUri: uri,
       }
     })
 
@@ -71,7 +67,7 @@ export const getCurrentChanges = async (
     ...untrackedChanges.map<IndexChange>((change: any) => {
       return {
         change,
-        type: 'untracked'
+        type: 'untracked',
       }
     }),
   ]

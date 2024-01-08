@@ -1,15 +1,10 @@
-import * as vscode from "vscode"
-import { Question } from "./defaultCommitQuestions"
+import * as vscode from 'vscode'
+import type { Question } from './defaultCommitQuestions'
 
 /**
  * Ask a question using showInputBox and displays the current value inside the prompt.
- * @param question
- * @param currentValue
  */
-export const ask = async (
-  question: Question,
-  currentValue?: string,
-): Promise<vscode.QuickPickItem> => {
+export async function ask(question: Question, currentValue?: string): Promise<vscode.QuickPickItem> {
   const options: vscode.InputBoxOptions = {
     title: question?.title,
     placeHolder: question?.placeHolder,
@@ -29,7 +24,7 @@ export const ask = async (
 
   if (question?.required) {
     validators.push((input: string) => {
-      if (!input) { return `This input is required` }
+      if (!input) { return 'This input is required' }
     })
   }
 
@@ -45,12 +40,12 @@ export const ask = async (
   let input = await vscode.window.showInputBox(options) || ''
 
   if (question.required && !input) {
-    throw new Error("Required input skipped, commit cancelled.")
+    throw new Error('Required input skipped, commit cancelled.')
   }
 
   // Return formatted question result
   if (question?.format && input) {
-    input = question.format.replace("{value}", input)
+    input = question.format.replace('{value}', input)
   }
   if (question?.suffix) {
     input = input + question.suffix
@@ -60,7 +55,7 @@ export const ask = async (
   }
 
   return {
-    label: input
+    label: input,
   }
 }
 
