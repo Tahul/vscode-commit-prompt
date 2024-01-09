@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import type { CommitPromptType, CommitPromptScopeType } from '../config'
+import type { CommitPromptType } from '../config'
 import ask from './ask'
 import type { Question } from './defaultCommitQuestions'
 
@@ -22,7 +22,7 @@ function castPromptsToQuickPickItems(prompts: CommitPromptType[]): vscode.QuickP
 /**
  * Ask a selectable question using showQuickPick.
  */
-export async function askOneOf(question: Question): Promise<vscode.QuickPickItem> {
+export async function askOneOf(question: Question): Promise<vscode.QuickPickItem | undefined> {
   let quickpickItems: vscode.QuickPickItem[] = []
 
   // No types nor scopes, return a plain input
@@ -46,13 +46,14 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
     ignoreFocusOut: true,
     matchOnDescription: true,
     matchOnDetail: true,
+    canPickMany: false,
   }
 
   let result: vscode.QuickPickItem | undefined = await vscode.window.showQuickPick(quickpickItems, pickOptions)
 
-  if (result === undefined) {
-    throw new Error('Input escaped, commit cancelled.')
-  }
+  if (question.required && result === undefined) { throw new Error('Required input escaped!') }
+
+  if (result === undefined) { return { label: '' } }
 
   result = { ...result }
 

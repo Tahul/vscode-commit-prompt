@@ -74,11 +74,11 @@ export function getVsCodeConfig(): CommitPromptCodeConfig {
   const vscodeConfig = vscode.workspace
     .getConfiguration()
     .get<CommitPromptCodeConfig>('commit-prompt')
-  
+
   const config = {
-    ...vscodeConfig
+    ...vscodeConfig,
   }
-  
+
   if (config?.issueQuestions && !config.issueQuestions.length) {
     delete config.issueQuestions
   }
@@ -94,6 +94,6 @@ export function getVsCodeConfig(): CommitPromptCodeConfig {
   if (config?.scopes && !config.scopes.length) {
     delete config.scopes
   }
-  
+
   return config as CommitPromptCodeConfig
 }

@@ -6,10 +6,10 @@ import gitCommit from '../helpers/gitCommit'
 import gitPush from '../helpers/gitPush'
 import type { CommitPromptExtensionContext } from '../extension'
 import askMultiple from '../helpers/askMultiple'
-import add from './add'
-import type { CommandCallback } from '.'
 import { getOrderedIssues } from '../helpers/getOrderedIssues'
 import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
+import add from './add'
+import type { CommandCallback } from '.'
 
 export function commit(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
@@ -17,11 +17,12 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
 
     const questions = await getCommitQuestions(extensionContext)
 
+    let addedChanges: vscode.QuickPickItem[] | undefined
     if (cpCodeConfig?.addBeforeCommit) {
-      const addResult: boolean = await add(extensionContext)()
+      addedChanges = await add(extensionContext)()
 
       // Cancel prompts if escaped
-      if (addResult === false) { return }
+      if (!addedChanges?.length) { return }
     }
 
     let commitMessage: string = ''
@@ -50,11 +51,11 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
             try {
               const { ordered: issuesItems } = await getOrderedIssues(extensionContext, page)
 
-              if (issuesItems.length === 0) throw new Error('No GitHub issues found!')
+              if (issuesItems.length === 0) { throw new Error('No GitHub issues found!') }
 
               const picks = await askMultiple(
                 paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),
-                question
+                question,
               )
 
               if (picks.find(pick => pick.label === 'Next page')) {
@@ -65,7 +66,7 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
               }
 
               let resolvedResult: string = question?.format || ''
-              
+
               if (question?.format) {
                 resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
               }
@@ -75,11 +76,12 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
               if (question?.prefix) {
                 resolvedResult = question?.prefix + resolvedResult
               }
-              
+
               commitMessage += resolvedResult
-              
+
               return
-            } catch (e) {
+            }
+            catch (e) {
               githubErrored = true
             }
 
@@ -97,7 +99,8 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
           await askIssues()
         }
       }
-      catch (e) {
+      catch (e: any) {
+        if (e?.message === 'Required input cancelled.') { return }
         outputMessage('Cancelling commit!', e)
         return
       }
@@ -112,7 +115,8 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
       if (cpCodeConfig?.pushAfterCommit) {
         try {
           await gitPush()
-        } catch (e) {
+        }
+        catch (e) {
           outputMessage('Could not push after commit!', e)
           return
         }

@@ -1,15 +1,15 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
-import type { CommandCallback } from '.'
 import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
 import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
+import type { CommandCallback } from '.'
 
 /**
  * Shows a prompt to undo the last commit.
  */
 export function unassign(
   extensionContext: CommitPromptExtensionContext,
-  page: number | undefined = 1
+  page: number | undefined = 1,
 ): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext

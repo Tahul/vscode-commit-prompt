@@ -206,9 +206,9 @@ The format must be the following:
   "configuration": {
     "properties": {
       "commit-prompt.addAllByDefault": {
-       "default": false,
-       "description": "Ticks by default `Add all` when opening a new `git add` prompt.",
-       "type": "boolean"
+        "default": false,
+        "description": "Ticks by default `Add all` when opening a new `git add` prompt.",
+        "type": "boolean"
       },
       "commit-prompt.addBeforeCommit": {
         "default": true,

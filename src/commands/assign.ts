@@ -1,15 +1,15 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
-import type { CommandCallback } from '.'
 import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
 import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
+import type { CommandCallback } from '.'
 
 /**
  * Shows a prompt to undo the last commit.
  */
 export function assign(
   extensionContext: CommitPromptExtensionContext,
-  page: number | undefined = 1
+  page: number | undefined = 1,
 ): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
@@ -29,7 +29,7 @@ export function assign(
         state: 'open',
         direction: 'desc',
         per_page: cpCodeConfig?.githubPerPage || 25,
-        page
+        page,
       },
     )
 
@@ -42,13 +42,13 @@ export function assign(
       // Filter already assigned issues
       .filter(issue => !issue.assignees?.find(assignee => assignee.login === user.login))
       .map((issue) => {
-      return {
-        label: issue.title,
-        description: issue.number.toString(),
-        detail: detailsFromIssue(issue),
-        picked: !!issue.assignees?.find(assignee => assignee.login === user.login)
-      }
-    })
+        return {
+          label: issue.title,
+          description: issue.number.toString(),
+          detail: detailsFromIssue(issue),
+          picked: !!issue.assignees?.find(assignee => assignee.login === user.login),
+        }
+      })
 
     const picks = await vscode.window.showQuickPick(
       paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),

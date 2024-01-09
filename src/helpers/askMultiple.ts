@@ -29,7 +29,7 @@ export async function askMultiple(
   quickpick.matchOnDescription = true
   quickpick.matchOnDetail = true
   quickpick.selectedItems = items.filter(item => item.picked)
-  if (onDidChangeSelection) quickpick.onDidChangeSelection((values) => onDidChangeSelection(values, quickpick))
+  if (onDidChangeSelection) { quickpick.onDidChangeSelection(values => onDidChangeSelection(values, quickpick)) }
 
   quickpick.show()
 
@@ -45,11 +45,9 @@ export async function askMultiple(
 
   quickpick.dispose()
 
-  if (!picks) { return [] }
+  if (!picks?.length && question?.required) { throw new Error('Required input escaped!') }
 
-  if (picks === undefined) {
-    throw new Error('Input escaped, selection cancelled.')
-  }
+  if (!picks?.length) { return [] }
 
   return picks.map(pick => ({ ...pick }))
 }

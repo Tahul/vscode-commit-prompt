@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { CommitPromptExtensionContext } from "../extension"
+import type { CommitPromptExtensionContext } from '../extension'
 import { detailsFromIssue } from './issueAsQuickPickItem'
 
 export async function getOrderedIssues(

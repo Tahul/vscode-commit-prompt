@@ -4,13 +4,13 @@ import askOneOf from '../helpers/askOneOf'
 import type { CommitPromptExtensionContext } from '../extension'
 import getIssueQuestions from '../helpers/getIssueQuestions'
 import { openInBrowser } from '../helpers/openInBrowser'
-import type { CommandCallback } from '.'
 import { getOrderedIssues } from '../helpers/getOrderedIssues'
 import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
+import type { CommandCallback } from '.'
 
 export function open(
   extensionContext: CommitPromptExtensionContext,
-  page: number | undefined = 1
+  page: number | undefined = 1,
 ): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, cpCodeConfig, outputMessage } = extensionContext
@@ -29,7 +29,7 @@ export function open(
         {
           label: 'New issue',
           iconPath: new vscode.ThemeIcon('new-file'),
-          detail: `Opens a new issue in ${repo}`
+          detail: `Opens a new issue in ${repo}`,
         } as vscode.QuickPickItem,
         {
           label: '',
@@ -37,7 +37,7 @@ export function open(
         } as vscode.QuickPickItem,
         ...paginateIssuesItems(
           issuesItems,
-          page
+          page,
         ),
       ] as vscode.QuickPickItem[],
       {

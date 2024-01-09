@@ -3,22 +3,23 @@ import { getCwd } from './getCwd'
 
 function getUserRepoFromURL(url: string): `${string}/${string}` | undefined {
   // Remove '.git' if it exists
-  const cleanedURL = url.replace(/\.git$/, '');
+  const cleanedURL = url.replace(/\.git$/, '')
 
-    // Check if the URL starts with 'git@'
+  // Check if the URL starts with 'git@'
   if (cleanedURL.startsWith('git@')) {
-    const parts = cleanedURL.split(':');
+    const parts = cleanedURL.split(':')
     if (parts.length === 2) {
-      const userRepoPart = parts[1].replace('.git', '');
-      const [user, repo] = userRepoPart.split('/');
-      return `${user}/${repo}`;
+      const userRepoPart = parts[1].replace('.git', '')
+      const [user, repo] = userRepoPart.split('/')
+      return `${user}/${repo}`
     }
-  } else {
+  }
+  else {
     // Split the URL by '/' and get the last two segments
-    const segments = cleanedURL.split('/');
-    const user = segments[segments.length - 2];
-    const repo = segments[segments.length - 1];
-    return `${user}/${repo}`;
+    const segments = cleanedURL.split('/')
+    const user = segments[segments.length - 2]
+    const repo = segments[segments.length - 1]
+    return `${user}/${repo}`
   }
 }
 

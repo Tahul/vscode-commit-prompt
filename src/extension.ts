@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.setStatusBarMessage(msg, 3000)
         }
       }
-    }
+    },
   }
 
   const initOctokit = async () => {

@@ -2,8 +2,8 @@ import type * as vscode from 'vscode'
 import type {
   CommitPromptCodeConfig,
   CommitPromptConfig,
-  CommitPromptType,
   CommitPromptScopeType,
+  CommitPromptType,
 } from '../config'
 import { defaultTypes } from './defaultTypes'
 
@@ -56,7 +56,7 @@ export function defaultCommitQuestions(
       placeHolder: 'Write a short description (required)',
       type: 'input',
       required: true,
-      format: ' {value}'
+      format: ' {value}',
     },
     {
       name: 'body',

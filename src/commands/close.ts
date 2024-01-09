@@ -1,16 +1,15 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
-import type { CommandCallback } from '.'
-import { getOrderedIssues } from '../helpers/getOrderedIssues'
 import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
 import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
+import type { CommandCallback } from '.'
 
 /**
  * Shows a prompt to undo the last commit.
  */
 export function close(
   extensionContext: CommitPromptExtensionContext,
-  page: number | undefined = 1
+  page: number | undefined = 1,
 ): CommandCallback {
   return async () => {
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
@@ -49,7 +48,7 @@ export function close(
           }),
         ),
         page,
-        cpCodeConfig.githubPerPage
+        cpCodeConfig.githubPerPage,
       ),
       {
         title: `Close issues${page > 1 ? ` (Page ${page})` : ''}`,

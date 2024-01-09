@@ -58,7 +58,8 @@ export function push(extensionContext: CommitPromptExtensionContext): CommandCal
     if (result && result.label === 'Push') {
       try {
         await gitPush()
-      } catch (e) {
+      }
+      catch (e) {
         outputMessage('Could not git push.', e)
       }
     }

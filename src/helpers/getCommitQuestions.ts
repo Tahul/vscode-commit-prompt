@@ -1,7 +1,6 @@
 import type { CommitPromptExtensionContext } from '../extension'
 import type { Question } from './defaultCommitQuestions'
 import defaultCommitQuestions from './defaultCommitQuestions'
-import { getOrderedIssues } from './getOrderedIssues'
 
 /**
  * Check if workspace config specifies a set of questions, otherwise use the default ones.

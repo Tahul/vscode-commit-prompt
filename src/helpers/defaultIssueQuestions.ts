@@ -1,8 +1,8 @@
 import type {
   CommitPromptCodeConfig,
   CommitPromptConfig,
-  CommitPromptType,
   CommitPromptScopeType,
+  CommitPromptType,
 } from '../config'
 import { defaultTypes } from './defaultTypes'
 
@@ -24,7 +24,7 @@ export interface Question {
  * Default questions from commit-prompt
  */
 export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig): Question[] {
-  const types: CommitPromptType[] =  cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
+  const types: CommitPromptType[] = cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
 
   const scopes: CommitPromptScopeType[] | undefined = cpCodeConfig?.scopes || cpConfig?.scopes
 
