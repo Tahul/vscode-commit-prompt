@@ -41,6 +41,7 @@ export interface CpConfig {
 export interface CommitPromptCodeConfig extends CommitPromptConfig {
   subjectLength: number
   showOutputChannel: 'status' | 'popup' | 'none'
+  addAllByDefault: boolean
   addBeforeCommit: boolean
   pushAfterCommit: boolean
   preset: 'conventional-commits' | 'cz-emoji'

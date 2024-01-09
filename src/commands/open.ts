@@ -5,7 +5,8 @@ import type { CommitPromptExtensionContext } from '../extension'
 import getIssueQuestions from '../helpers/getIssueQuestions'
 import { openInBrowser } from '../helpers/openInBrowser'
 import type { CommandCallback } from '.'
-import { castIssuesAsQuickPickItem } from '../helpers/issueAsQuickPickItem'
+import { getOrderedIssues } from '../helpers/getOrderedIssues'
+import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
 
 export function open(
   extensionContext: CommitPromptExtensionContext,
@@ -15,40 +16,30 @@ export function open(
     const { octoKit, user, cwd, repo, cpCodeConfig, outputMessage } = extensionContext
 
     if (!octoKit || !user?.login || !repo) {
-      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.gitHubToken` first.')
+      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.githubToken` first.')
       return
     }
 
     if (!cwd) { return }
 
-    const issues = await octoKit.request(
-      'GET /repos/{owner}/{repo}/issues',
-      {
-        owner: repo.split('/')[0],
-        repo: repo.split('/')[1],
-        state: 'open',
-        direction: 'desc',
-        per_page: cpCodeConfig?.githubPerPage || 25,
-        page,
-      },
-    )
-
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = castIssuesAsQuickPickItem(issues.data)
+    const { ordered: issuesItems, issues } = await getOrderedIssues(extensionContext, page)
 
     const pick = await vscode.window.showQuickPick(
       [
         {
           label: 'New issue',
-          icon: vscode.ThemeIcon.File,
+          iconPath: new vscode.ThemeIcon('new-file'),
+          detail: `Opens a new issue in ${repo}`
         } as vscode.QuickPickItem,
         {
           label: '',
           kind: vscode.QuickPickItemKind.Separator,
         } as vscode.QuickPickItem,
-        ...(page > 1 ? [{ label: `Previous page`, description: (page - 1 >= 1 ? page - 1 : 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-        ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', description: (page + 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-      ],
+        ...paginateIssuesItems(
+          issuesItems,
+          page
+        ),
+      ] as vscode.QuickPickItem[],
       {
         title: `Open issue${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: false,
@@ -66,7 +57,7 @@ export function open(
     }
 
     if (pick && pick?.description) {
-      const issue = issues.data.find(d => d.number === Number(pick.description))
+      const issue = issues.find(d => d.number === Number(pick.description))
       if (issue) { await openInBrowser(issue.html_url) }
     }
 

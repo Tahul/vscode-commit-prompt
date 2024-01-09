@@ -8,6 +8,8 @@ import type { CommitPromptExtensionContext } from '../extension'
 import askMultiple from '../helpers/askMultiple'
 import add from './add'
 import type { CommandCallback } from '.'
+import { getOrderedIssues } from '../helpers/getOrderedIssues'
+import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
 
 export function commit(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
@@ -41,24 +43,62 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
           continue
         }
 
-        if (question.name === 'issues' && question.type === 'multiple' && question.items) {
-          const picks = await askMultiple(question.items, question)
-          let resolvedResult: string = question?.format || ''
-          if (question?.format) {
-            resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+        if (question.name === 'issues' && question.type === 'issues') {
+          const askIssues = async (page: number = 1): Promise<any> => {
+            let githubErrored = false
+
+            try {
+              const { ordered: issuesItems } = await getOrderedIssues(extensionContext, page)
+
+              if (issuesItems.length === 0) throw new Error('No GitHub issues found!')
+
+              const picks = await askMultiple(
+                paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),
+                question
+              )
+
+              if (picks.find(pick => pick.label === 'Next page')) {
+                return await askIssues(page + 1)
+              }
+              if (picks.find(pick => pick.label === 'Previous page')) {
+                return await askIssues(page - 1 >= 1 ? page - 1 : 1)
+              }
+
+              let resolvedResult: string = question?.format || ''
+              
+              if (question?.format) {
+                resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+              }
+              if (question?.suffix) {
+                resolvedResult = resolvedResult + question?.suffix
+              }
+              if (question?.prefix) {
+                resolvedResult = question?.prefix + resolvedResult
+              }
+              
+              commitMessage += resolvedResult
+              
+              return
+            } catch (e) {
+              githubErrored = true
+            }
+
+            if (githubErrored) {
+              commitMessage += await ask({
+                name: 'issues',
+                title: question?.title || 'Issues closed by your commit',
+                placeHolder: 'Select the issue(s) to close (optional, in this format: #123, #456)',
+                type: 'input',
+                format: '\n\nCloses {value}', // Break 2 lines for issues
+              }).then(v => v?.label)
+            }
           }
-          if (question?.suffix) {
-            resolvedResult = resolvedResult + question?.suffix
-          }
-          if (question?.prefix) {
-            resolvedResult = question?.prefix + resolvedResult
-          }
-          commitMessage += resolvedResult
+
+          await askIssues()
         }
       }
       catch (e) {
-        outputMessage('Cancelling commit!')
-
+        outputMessage('Cancelling commit!', e)
         return
       }
     }
@@ -70,13 +110,18 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
       await vscode.commands.executeCommand('git.refresh')
 
       if (cpCodeConfig?.pushAfterCommit) {
-        await gitPush()
+        try {
+          await gitPush()
+        } catch (e) {
+          outputMessage('Could not push after commit!', e)
+          return
+        }
       }
 
       outputMessage(`Successfully commited: ${commitMessage}`)
     }
     catch (e) {
-      outputMessage(`Could not commit: ${commitMessage}`)
+      outputMessage(`Could not commit: ${commitMessage}`, e)
     }
   }
 }

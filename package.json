@@ -2,7 +2,7 @@
   "publisher": "yaelguilloux",
   "name": "vscode-commit-prompt",
   "displayName": "vscode-commit-prompt",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "⛏ VSCode keybound formatted commit prompt.",
   "author": {
     "name": "Yaël GUILLOUX",
@@ -103,75 +103,73 @@
       }
     ],
     "configuration": {
-      "title": "commit-prompt configuration",
+      "title": "vscode-commit-prompt",
       "properties": {
-        "commit-prompt.preset": {
-          "type": "string",
-          "description": "Select between the two default presets if you don't override from repository config.",
-          "enum": [
-            "conventional-commits",
-            "cz-emoji"
-          ],
-          "default": "conventional-commits"
-        },
-        "commit-prompt.subjectLength": {
-          "type": "number",
-          "default": 75,
-          "description": "Override the allowed commit message subject length."
-        },
-        "commit-prompt.showOutputChannel": {
-          "type": "string",
-          "enum": [
-            "status",
-            "popup",
-            "none"
-          ],
-          "default": "status",
-          "description": "The extension preferred output channel after commit."
+        "commit-prompt.addAllByDefault": {
+          "default": false,
+          "description": "Ticks by default `Add all` when opening a new `git add` prompt.",
+          "type": "boolean"
         },
         "commit-prompt.addBeforeCommit": {
-          "type": "boolean",
           "default": true,
-          "description": "Always show git add prompt before writing your commit."
-        },
-        "commit-prompt.pushAfterCommit": {
-          "type": "boolean",
-          "default": false,
-          "description": "Always push after a commit."
-        },
-        "commit-prompt.githubToken": {
-          "type": "string",
-          "description": "Queries the GitHub API to find issues for the Issues step of your commit."
+          "description": "Always show git add prompt before writing your commit.",
+          "type": "boolean"
         },
         "commit-prompt.autoAssignOpenedIssues": {
-          "type": "boolean",
+          "default": true,
           "description": "Automatically assign yourself to any opened issues.",
-          "default": true
-        },
-        "commit-prompt.githubPerPage": {
-          "type": "number",
-          "description": "The amount of issues to fetch per page. The smaller the faster your prompts will feel.",
-          "default": 25
+          "type": "boolean"
         },
         "commit-prompt.commitQuestions": {
+          "default": [],
           "description": "Overwrites commits questions from other configuration sources and presets.",
-          "type": "array",
-          "default": []
+          "type": "array"
+        },
+        "commit-prompt.githubPerPage": {
+          "default": 25,
+          "description": "The amount of issues to fetch per page. The smaller the faster your prompts will feel.",
+          "type": "number"
+        },
+        "commit-prompt.githubToken": {
+          "description": "Needed to query the GitHub API to manage issues.",
+          "type": "string"
         },
         "commit-prompt.issuesQuestions": {
+          "default": [],
           "description": "Overwrites issues questions from other configuration sources and presets.",
-          "type": "array",
-          "default": []
+          "type": "array"
+        },
+        "commit-prompt.preset": {
+          "default": "conventional-commits",
+          "description": "Select between the two default presets if you don't override from repository config.",
+          "enum": ["conventional-commits", "cz-emoji"],
+          "type": "string"
+        },
+        "commit-prompt.pushAfterCommit": {
+          "default": false,
+          "description": "Always push after a commit.",
+          "type": "boolean"
         },
         "commit-prompt.scopes": {
+          "default": [],
           "description": "Overwrites scopes from other configuration sources and presets.",
-          "type": "array",
-          "default": []
+          "type": "array"
+        },
+        "commit-prompt.showOutputChannel": {
+          "default": "status",
+          "description": "The extension preferred output channel after commit.",
+          "enum": ["status", "popup", "none"],
+          "type": "string"
+        },
+        "commit-prompt.subjectLength": {
+          "default": 75,
+          "description": "Override the allowed commit message subject length.",
+          "type": "number"
         },
         "commit-prompt.types": {
+          "default": [],
           "description": "Overwrites types from other configuration sources and presets.",
-          "type": "array",
-          "default": []
+          "type": "array"
         }
       }
     }

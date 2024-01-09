@@ -32,14 +32,14 @@ export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfi
     {
       title: 'Create issue (type)',
       name: 'type',
-      placeHolder: 'Select the type of issue you are creating (type)',
+      placeHolder: 'Select the type of issue you are creating (required)',
       type: 'oneOf',
       prompts: types,
     },
     {
       title: 'Create issue (scope)',
       name: 'scope',
-      placeHolder: 'Specify a scope (scope)',
+      placeHolder: 'Specify a scope (optional)',
       type: scopes ? 'oneOf' : 'input',
       scopes: scopes || undefined,
       format: '({value})',
@@ -48,14 +48,14 @@ export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfi
     {
       title: 'Create issue (subject)',
       name: 'subject',
-      placeHolder: 'Write a short description (subject)',
+      placeHolder: 'Write a short description (required)',
       type: 'input',
       required: true,
     },
     {
       title: 'Create issue (body)',
       name: 'body',
-      placeHolder: 'Maybe provide a longer description (body)',
+      placeHolder: 'Add a longer description (optional)',
       type: 'input',
     },
   ]

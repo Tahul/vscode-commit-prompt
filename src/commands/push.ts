@@ -10,7 +10,7 @@ import type { CommandCallback } from '.'
  */
 export function push(extensionContext: CommitPromptExtensionContext): CommandCallback {
   return async () => {
-    const { cwd } = extensionContext
+    const { cwd, outputMessage } = extensionContext
 
     if (!cwd) { return }
 
@@ -55,7 +55,13 @@ export function push(extensionContext: CommitPromptExtensionContext): CommandCal
       },
     )
 
-    if (result && result.label === 'Push') { await gitPush() }
+    if (result && result.label === 'Push') {
+      try {
+        await gitPush()
+      } catch (e) {
+        outputMessage('Could not git push.', e)
+      }
+    }
   }
 }
 
