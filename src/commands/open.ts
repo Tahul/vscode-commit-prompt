@@ -22,7 +22,11 @@ export function open(
 
     if (!cwd) { return }
 
-    const { ordered: issuesItems, issues } = await getOrderedIssues(extensionContext, page)
+    const {
+      ordered: issuesItems,
+      issues,
+      assignedIssues
+    } = await getOrderedIssues(extensionContext, page)
 
     const pick = await vscode.window.showQuickPick(
       [
@@ -57,7 +61,7 @@ export function open(
     }
 
     if (pick && pick?.description) {
-      const issue = issues.find(d => d.number === Number(pick.description))
+      const issue = issues.find(d => d.number === Number(pick.description)) || assignedIssues.find(d => d.number === Number(pick.description))
       if (issue) { await openInBrowser(issue.html_url) }
     }
 
