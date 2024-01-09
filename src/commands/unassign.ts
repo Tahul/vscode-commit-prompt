@@ -55,7 +55,7 @@ export function unassign(
         title: `Unassign myself from issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,
         ignoreFocusOut: true,
-        placeHolder: 'Assign yourself to issues',
+        placeHolder: 'Unassign yourself from issues',
       },
     )
 

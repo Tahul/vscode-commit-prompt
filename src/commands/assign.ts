@@ -38,7 +38,10 @@ export function assign(
       return
     }
 
-    const issuesItems: vscode.QuickPickItem[] = issues.data.map((issue) => {
+    const issuesItems: vscode.QuickPickItem[] = issues.data
+      // Filter already assigned issues
+      .filter(issue => !issue.assignees?.find(assignee => assignee.login === user.login))
+      .map((issue) => {
       return {
         label: issue.title,
         description: issue.number.toString(),
