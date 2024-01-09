@@ -23,39 +23,53 @@ function getFileTypeName(type: IndexChangeType) {
 /**
  * Cast Change[] into a vscode.QuickPickItem[].
  */
-function castIndexChangesToQuickPickItems(changes: IndexChange[], cwd: string): vscode.QuickPickItem[] {
-  const rawChanges: vscode.QuickPickItem[] = [
+function castIndexChangesToQuickPickItems(
+  changes: IndexChange[],
+  cwd: string,
+  addAllByDefault: boolean = false,
+): vscode.QuickPickItem[] {
+  const added = []
+
+  const fileChanges = [
+    ...changes.map(
+      (file: IndexChange): vscode.QuickPickItem => {
+        const picked = addAllByDefault || [
+          Status.INDEX_MODIFIED,
+          Status.INDEX_DELETED,
+          Status.INDEX_ADDED,
+          Status.INDEX_COPIED,
+          Status.INDEX_RENAMED,
+          Status.ADDED_BY_US,
+          Status.ADDED_BY_THEM,
+          Status.BOTH_ADDED,
+        ].includes(file.change.status)
+
+        if (picked) { added.push(file) }
+
+        return {
+          label: file.change.uri.path.split('/').pop() || file.change.uri.path,
+          description: getFileTypeName(file.type),
+          detail: file.change.uri.path.replace(cwd, ''),
+          iconPath: vscode.ThemeIcon.File,
+          picked,
+        }
+      },
+    ),
+  ]
+
+  return [
     {
       label: 'Add all',
       description: 'git add .',
       detail: cwd,
       iconPath: vscode.ThemeIcon.Folder,
-      picked: true,
+      picked: addAllByDefault || added.length === fileChanges.length,
     },
-  ]
-
-  return [
-    ...rawChanges,
-    ...changes.map(
-      (file: IndexChange): vscode.QuickPickItem => {
-        return {
-          label: file.change.uri.path.split('/').pop() || file.change.uri.path,
-          description: getFileTypeName(file.type),
-          detail: file.change.uri.path,
-          iconPath: vscode.ThemeIcon.File,
-          picked: [
-            Status.INDEX_MODIFIED,
-            Status.INDEX_DELETED,
-            Status.INDEX_ADDED,
-            Status.INDEX_COPIED,
-            Status.INDEX_RENAMED,
-            Status.ADDED_BY_US,
-            Status.ADDED_BY_THEM,
-            Status.BOTH_ADDED,
-          ].includes(file.change.status),
-        }
-      },
-    ),
+    {
+      kind: vscode.QuickPickItemKind.Separator,
+      label: 'Changes'
+    },
+    ...fileChanges
   ]
 }
 
@@ -64,9 +78,11 @@ function castIndexChangesToQuickPickItems(changes: IndexChange[], cwd: string): 
  * Picked = added to next commit
  * Unpicked = not added to next commit
  */
-export function add(extensionContext: CommitPromptExtensionContext): CommandCallback {
+export function add(
+  extensionContext: CommitPromptExtensionContext,
+): CommandCallback {
   return async () => {
-    const { git, outputMessage, cwd } = extensionContext
+    const { git, outputMessage, cwd, cpCodeConfig } = extensionContext
 
     if (!cwd) { return false }
 
@@ -82,10 +98,71 @@ export function add(extensionContext: CommitPromptExtensionContext): CommandCall
         return false
       }
 
-      const picks = await askMultiple(castIndexChangesToQuickPickItems(changes, cwd))
+      const changesItems = castIndexChangesToQuickPickItems(changes, cwd, cpCodeConfig.addAllByDefault)
 
-      if (picks?.[0]?.description === 'git add .') {
-        addedChanges = 'all'
+      const picks = await askMultiple(
+        changesItems,
+        {
+          name: 'files',
+          title: 'Add files to your commit',
+          placeHolder: 'Add files to your next commit by picking them.',
+          type: 'multiple',
+        },
+        (items, quickpick) => {
+          const rootChangeItem = changesItems.find(item => item.label === 'Add all')!
+          const addedChangeItem = items.find(item => item.label === 'Add all')
+
+          if (
+            !rootChangeItem.picked &&
+            addedChangeItem
+          ) {
+            rootChangeItem.picked = true
+            quickpick.selectedItems = quickpick.items
+            return
+          }
+
+          if (
+            addedChangeItem &&
+            (quickpick.selectedItems.length - 1) < changes.length
+          ) {
+            rootChangeItem.picked = false
+            quickpick.selectedItems = quickpick.selectedItems.filter(item => item.label !== 'Add all')
+            return
+          }
+
+          if (
+            quickpick.selectedItems.find(item => item.label !== 'Add all') &&
+            rootChangeItem.picked &&
+            !addedChangeItem
+          ) {
+            rootChangeItem.picked = false
+            quickpick.selectedItems = []
+            return
+          }
+
+          if (
+            !rootChangeItem.picked &&
+            quickpick.selectedItems.length === changes.length
+          ) {
+            rootChangeItem.picked = true
+            quickpick.selectedItems = [
+              rootChangeItem as vscode.QuickPickItem,
+              ...quickpick.selectedItems,
+            ]
+            return
+          }
+        }
+      )
+
+      if (picks.find(pick => pick.description === 'git add .')) {
+          try {
+            await gitAdd('.')
+            outputMessage(`Added all (${changes.length}) changes.`)
+          } catch (e) {
+            outputMessage('Could not git add all files.', e)
+            return false
+          }
+          return true
       }
       else {
         for (const pick of picks) {
@@ -97,12 +174,6 @@ export function add(extensionContext: CommitPromptExtensionContext): CommandCall
             addedChanges.push(changeFromPick.change)
           }
         }
-      }
-
-      // Skip following code if `all` is picked
-      if (addedChanges === 'all') {
-        await gitAdd('.')
-        return true
       }
     }
     catch (e) {
@@ -120,13 +191,21 @@ export function add(extensionContext: CommitPromptExtensionContext): CommandCall
           return pickedChange.uri.fsPath === change.uri.fsPath
         })
       ) {
-        await gitRemove(git, repo, change)
+        try {
+          await gitRemove(git, repo, change)
+        } catch (e) {
+          outputMessage(`Could git remove ${change.uri.fsPath}`, e)
+        }
       }
     }
 
     // Add picked ones
     for (const pick of addedChanges) {
-      await gitAdd(pick)
+      try {
+        await gitAdd(pick)
+      } catch (e) {
+        outputMessage(`Could not git add file ${pick.uri.fsPath}`, e)
+      }
     }
 
     return addedChanges.length > 0

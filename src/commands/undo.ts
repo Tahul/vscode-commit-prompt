@@ -49,7 +49,7 @@ export function undo(extensionContext: CommitPromptExtensionContext): CommandCal
         cp.execSync('git reset --soft HEAD^', { cwd })
       }
       catch (e) {
-        outputMessage('Could not undo the last commit!')
+        outputMessage('Could not undo the last commit!', e)
       }
     }
 
@@ -58,7 +58,7 @@ export function undo(extensionContext: CommitPromptExtensionContext): CommandCal
         cp.execSync('git reset --hard HEAD^', { cwd })
       }
       catch (e) {
-        outputMessage('Could not undo the last commit!')
+        outputMessage('Could not undo the last commit!', e)
       }
     }
   }

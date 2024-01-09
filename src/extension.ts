@@ -25,10 +25,12 @@ export interface CommitPromptExtensionContext {
     id?: number
   }
   repo?: `${string}/${string}`
-  outputMessage: (msg: string) => Promise<void>
+  outputMessage: (msg: string, e?: any) => Promise<void>
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  let outputChannel: vscode.OutputChannel | undefined
+
   const extensionContext: CommitPromptExtensionContext = {
     get cwd() {
       return getCwd()
@@ -40,21 +42,30 @@ export function activate(context: vscode.ExtensionContext) {
     octoKit: undefined,
     user: undefined,
     get outputMessage() {
-      return async (message: string) => {
+      return async (msg: string, e?: string) => {
+        if (e && extensionContext.cpCodeConfig.showOutputChannel !== 'none') {
+          if (!outputChannel) {
+            outputChannel = vscode.window.createOutputChannel('Commit Prompt', 'js')
+            outputChannel.show(true)
+          }
+          outputChannel.append([msg, e].join('\n'))
+          return
+        }
+
         if (!extensionContext.cpCodeConfig.showOutputChannel || extensionContext.cpCodeConfig.showOutputChannel === 'none') {
           return
         }
 
         if (extensionContext.cpCodeConfig.showOutputChannel === 'popup') {
-          await vscode.window.showInformationMessage(message)
+          await vscode.window.showInformationMessage(msg)
           return
         }
 
         if (extensionContext.cpCodeConfig.showOutputChannel === 'status') {
-          vscode.window.setStatusBarMessage(message, 3000)
+          vscode.window.setStatusBarMessage(msg, 3000)
         }
       }
-    },
+    }
   }
 
   const initOctokit = async () => {

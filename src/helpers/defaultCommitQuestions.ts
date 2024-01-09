@@ -25,7 +25,10 @@ export interface Question {
 /**
  * Default questions from commit-prompt
  */
-export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfig: CommitPromptCodeConfig, issuesItems: vscode.QuickPickItem[] | undefined = undefined): Question[] {
+export function defaultCommitQuestions(
+  cpConfig: CommitPromptConfig,
+  cpCodeConfig: CommitPromptCodeConfig,
+): Question[] {
   const defaultCommitTypes: CommitPromptType[] = cpCodeConfig?.types || cpConfig?.types || defaultTypes(cpConfig, cpCodeConfig)
 
   const scopes: CommitPromptScopeType[] | undefined = [...(cpCodeConfig?.scopes || cpConfig?.scopes || [])]
@@ -33,46 +36,42 @@ export function defaultCommitQuestions(cpConfig: CommitPromptConfig, cpCodeConfi
   const questions: Question[] = [
     {
       name: 'type',
-      placeHolder: 'Select the type of change you are committing',
+      title: 'Type of your commit',
+      placeHolder: 'Select the type of change you are committing (required)',
       type: 'oneOf',
       prompts: defaultCommitTypes,
     },
     {
       name: 'scope',
-      placeHolder: 'Specify a scope',
-      type: scopes ? 'oneOf' : 'input',
+      title: 'Scope of your commit',
+      placeHolder: 'Specify a scope (optional)',
+      type: scopes?.length ? 'oneOf' : 'input',
       scopes: scopes || undefined,
       format: '({value})',
       suffix: ':',
     },
     {
       name: 'subject',
-      placeHolder: 'Write a short description',
+      title: 'Subject of your commit',
+      placeHolder: 'Write a short description (required)',
       type: 'input',
       required: true,
+      format: ' {value}'
     },
     {
       name: 'body',
-      placeHolder: 'Maybe provide a longer description',
+      title: 'Body of your commit',
+      placeHolder: 'Add a longer description (optional)',
       type: 'input',
       format: '\n\n{value}', // Break 2 lines for body
     },
-    (
-      issuesItems?.length
-        ? {
-            name: 'issues',
-            placeHolder: 'List any issue closed',
-            type: 'multiple',
-            items: issuesItems,
-            format: '\n\nCloses {value}', // Break 2 lines for issues
-          }
-        : {
-            name: 'issues',
-            placeHolder: 'List any issue closed (#xx, #xy, #yz...)',
-            type: 'input',
-            format: '\n\nCloses {value}', // Break 2 lines for issues
-          }
-    ),
+    {
+      name: 'issues',
+      title: 'Issues closed by your commit',
+      placeHolder: 'Select the issue(s) to close (optional)',
+      type: 'issues',
+      format: '\n\nCloses {value}', // Break 2 lines for issues
+    },
   ]
 
   return questions

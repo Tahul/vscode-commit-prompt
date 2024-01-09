@@ -1,7 +1,9 @@
 import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { CommandCallback } from '.'
-import { castIssuesAsQuickPickItem } from '../helpers/issueAsQuickPickItem'
+import { getOrderedIssues } from '../helpers/getOrderedIssues'
+import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
+import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
 
 /**
  * Shows a prompt to undo the last commit.
@@ -14,7 +16,7 @@ export function close(
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
 
     if (!octoKit || !user?.login || !repo) {
-      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.gitHubToken` first.')
+      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.githubToken` first.')
       return
     }
 
@@ -30,21 +32,25 @@ export function close(
         per_page: cpCodeConfig?.githubPerPage || 25,
         page,
       },
-    )
+    ).then(result => result.data)
 
-    if (!issues.data.length) {
+    if (!issues.length) {
       outputMessage('There is no opened issues in that repository.')
       return
     }
 
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = castIssuesAsQuickPickItem(issues.data)
-
     const picks = await vscode.window.showQuickPick(
-      [
-        ...(page > 1 ? [{ label: 'Previous page', iconPath: vscode.ThemeIcon.Folder }] : []),
-        ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', iconPath: vscode.ThemeIcon.Folder }] : []),
-      ],
+      paginateIssuesItems(
+        issues.map(
+          issue => ({
+            label: issue.title,
+            description: issue.number.toString(),
+            detail: detailsFromIssue(issue),
+          }),
+        ),
+        page,
+        cpCodeConfig.githubPerPage
+      ),
       {
         title: `Close issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,

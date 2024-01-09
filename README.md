@@ -26,11 +26,11 @@ All actions that relates to committing code (add, push, commit, undo) resolves a
 
 Opens the `Commit` prompt.
 
-Prompts for `Add` beforehand if you enabled [`addBeforeCommit`].
+Prompts for `Add` beforehand if you enabled [`addBeforeCommit`](#-vscode-settings).
 
-Prompt for resolvable closable GitHub issues if you enabled [`githubToken`].
+Prompt for resolvable closable GitHub issues if you enabled [`githubToken`](#-vscode-settings).
 
-Push after your commit if you enabled [`pushAfterCommit`].
+Push after your commit if you enabled [`pushAfterCommit`](#-vscode-settings).
 
 - Default:
   ```json
@@ -51,7 +51,7 @@ Allows to add `all` (`git add ${workspaceRoot}`) with first prompt item.
 
 Will `rm` unchecked files from the staged files.
 
-Will be prompted in `Commit` flow with [`addBeforeCommit`], you usually won't need this keybinding.
+Will be prompted in `Commit` flow with [`addBeforeCommit`](#-vscode-settings), you usually won't need this keybinding.
 
 - Default:
   ```json
@@ -117,7 +117,7 @@ Allows to create a new minimal issue with a similar shape as a commit.
 
 Lists open issues on GitHub and orders between assigned and unassigned issues.
 
-You can toggle if new issues gets auto-assigned to you using [`autoAssignOpenedIssues`].
+You can toggle if new issues gets auto-assigned to you using [`autoAssignOpenedIssues`](#-vscode-settings).
 
 - Default:
   ```json
@@ -201,47 +201,75 @@ The format must be the following:
 
 ### 👤 VSCode settings
 
-VSCode settings exposes four parameters:
-
-#### Preset `commit-prompt.preset`
-
-You can choose between `conventional-commits` and `cz-emoji`.
-
-You can find preset types content here:
-
-- [conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L412)
-- [cz-emoji](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L19)
-
-This parameter will be ignored if you overwrite `types` or `questions` from `package.json` or `.cprc`.
-
-Default: `conventional-commits`.
-
-#### Add Before Commit `commit-prompt.addBeforeCommit`
-
-Whether or not you want the extension to show the `add` prompt before each commit.
-
-Default: `true`
-
-#### Push After Commit `commit-prompt.pushAfterCommit`
-
-Whether or not your want the extension to `git push` after each commit.
-
-Default: `false`
-
-#### Subject Length `commit-prompt.subjectLength`
-
-The max allowed length for the commit subject.
-
-Default: `75`
-
-#### Show Output Channel `commit-prompt.showOutputChannel`
-
-Show the output channel when you commit.
-
-Supports:
-- `status`: will output messages in your [VSCode Status Bar](https://code.visualstudio.com/api/ux-guidelines/status-bar).
-- `popup`: will output messages in [VSCode Information Messages]().
-- `none`: will make the extension fully silent.
+```json
+{
+  "configuration": {
+    "properties": {
+      "commit-prompt.addBeforeCommit": {
+        "default": true,
+        "description": "Always show git add prompt before writing your commit.",
+        "type": "boolean"
+      },
+      "commit-prompt.autoAssignOpenedIssues": {
+        "default": true,
+        "description": "Automatically assign yourself to any opened issues.",
+        "type": "boolean"
+      },
+      "commit-prompt.commitQuestions": {
+        "default": [],
+        "description": "Overwrites commits questions from other configuration sources and presets.",
+        "type": "array"
+      },
+      "commit-prompt.githubPerPage": {
+        "default": 25,
+        "description": "The amount of issues to fetch per page. The smaller the faster your prompts will feel.",
+        "type": "number"
+      },
+      "commit-prompt.githubToken": {
+        "description": "Needed to query the GitHub API to manage issues.",
+        "type": "string"
+      },
+      "commit-prompt.issuesQuestions": {
+        "default": [],
+        "description": "Overwrites issues questions from other configuration sources and presets.",
+        "type": "array"
+      },
+      "commit-prompt.preset": {
+        "default": "conventional-commits",
+        "description": "Select between the two default presets if you don't override from repository config.",
+        "enum": ["conventional-commits", "cz-emoji"],
+        "type": "string"
+      },
+      "commit-prompt.pushAfterCommit": {
+        "default": false,
+        "description": "Always push after a commit.",
+        "type": "boolean"
+      },
+      "commit-prompt.scopes": {
+        "default": [],
+        "description": "Overwrites scopes from other configuration sources and presets.",
+        "type": "array"
+      },
+      "commit-prompt.showOutputChannel": {
+        "default": "status",
+        "description": "The extension preferred output channel after commit.",
+        "enum": ["status", "popup", "none"],
+        "type": "string"
+      },
+      "commit-prompt.subjectLength": {
+        "default": 75,
+        "description": "Override the allowed commit message subject length.",
+        "type": "number"
+      },
+      "commit-prompt.types": {
+        "default": [],
+        "description": "Overwrites types from other configuration sources and presets.",
+        "type": "array"
+      }
+    }
+  }
+}
+```
 
 ### 👥 Per repository config
 
@@ -370,6 +398,21 @@ Switching between my _issues tracker_, my _code editor_ and the _Git CLI_ is the
 Also, I'm used to sending giant commits and that causes me pain everytime I review my git history.
 
 This aims to be a minimal, fast and efficient way to improve my workflow and reduce friction. Maybe it could be yours too?
+
+## ⛏️ Contribute
+
+If you want to contribute to the repository, you can clone the repo and run the app in extension mode by doing:
+
+```
+git clone https://github.com/Tahul/vscode-commit-prompt.git && \
+cd vscode-commit-promp && \
+pnpm install && \
+pnpm run dev
+```
+
+Once you have run `pnpm run dev`, you can the open the [`Run and Debug`](https://code.visualstudio.com/docs/editor/debugging#:~:text=To%20bring%20up%20the%20Run,debugging%20commands%20and%20configuration%20settings.) tab of VSCode and launch `Run Extension`.
+
+That will open a new VSCode Extension Host tab with the fully working extension, attached to the debugging terminal.
 
 ## 👨‍💻 Credits
 

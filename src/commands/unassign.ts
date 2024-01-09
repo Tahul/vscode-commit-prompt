@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { CommandCallback } from '.'
 import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
+import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
 
 /**
  * Shows a prompt to undo the last commit.
@@ -14,7 +15,7 @@ export function unassign(
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
 
     if (!octoKit || !user?.login || !repo) {
-      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.gitHubToken` first.')
+      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.githubToken` first.')
       return
     }
 
@@ -30,7 +31,7 @@ export function unassign(
         state: 'open',
         direction: 'desc',
         per_page: cpCodeConfig?.githubPerPage || 25,
-        assignees: [user.login],
+        assignee: user.login,
         page,
       },
     )
@@ -40,7 +41,7 @@ export function unassign(
       return
     }
 
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = issues.data.map((issue) => {
+    const issuesItems: vscode.QuickPickItem[] = issues.data.map((issue) => {
       return {
         label: issue.title,
         description: issue.number.toString(),
@@ -49,11 +50,7 @@ export function unassign(
     })
 
     const picks = await vscode.window.showQuickPick(
-      [
-        ...(page > 1 ? [{ label: `Previous page`, description: (page - 1 >= 1 ? page - 1 : 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-        ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', description: (page + 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-      ],
+      paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),
       {
         title: `Unassign myself from issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,
@@ -92,6 +89,7 @@ export function unassign(
         successFullyUnassigned.push(pick.description)
       }
       catch (e) {
+        outputMessage(`Error while unassigning you from ${repo}/#${pick.description}`, e)
         errorWhileUnassigned.push(pick.description)
       }
     }

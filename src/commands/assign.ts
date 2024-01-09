@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import type { CommitPromptExtensionContext } from '../extension'
 import type { CommandCallback } from '.'
 import { detailsFromIssue } from '../helpers/issueAsQuickPickItem'
+import { paginateIssuesItems } from '../helpers/paginateIssuesItems'
 
 /**
  * Shows a prompt to undo the last commit.
@@ -14,7 +15,7 @@ export function assign(
     const { octoKit, user, cwd, repo, outputMessage, cpCodeConfig } = extensionContext
 
     if (!octoKit || !user?.login || !repo) {
-      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.gitHubToken` first.')
+      outputMessage('You do not seem properly logged into GitHub, try setting your `commit-prompt.githubToken` first.')
       return
     }
 
@@ -37,21 +38,17 @@ export function assign(
       return
     }
 
-    const issuesAsQuickPickItem: vscode.QuickPickItem[] = issues.data.map((issue) => {
+    const issuesItems: vscode.QuickPickItem[] = issues.data.map((issue) => {
       return {
         label: issue.title,
         description: issue.number.toString(),
         detail: detailsFromIssue(issue),
-        picked: !!issue.assignees?.find(assignee => assignee.login === user.login),
+        picked: !!issue.assignees?.find(assignee => assignee.login === user.login)
       }
     })
 
     const picks = await vscode.window.showQuickPick(
-      [
-        ...(page > 1 ? [{ label: `Previous page`, description: (page - 1 >= 1 ? page - 1 : 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-        ...issuesAsQuickPickItem,
-        ...(issuesAsQuickPickItem.length === cpCodeConfig.githubPerPage ? [{ label: 'Next page', description: (page + 1).toString(), iconPath: vscode.ThemeIcon.Folder }] : []),
-      ],
+      paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),
       {
         title: `Assign myself to issues${page > 1 ? ` (Page ${page})` : ''}`,
         canPickMany: true,
@@ -77,6 +74,12 @@ export function assign(
       if (!pick.description) { continue }
 
       try {
+        // Avoid assigning twice
+        const issue = issues.data.find(issue => Number(issue.number) === Number(pick.description))
+        if (issue?.assignees?.find(assignee => assignee.login === user.login)) {
+          continue
+        }
+
         await octoKit.request(
           'POST /repos/{owner}/{repo}/issues/{issue_number}/assignees',
           {
@@ -90,6 +93,7 @@ export function assign(
         successFullyAssigned.push(pick.description)
       }
       catch (e) {
+        outputMessage(`Error while assigning you to ${repo}/#${pick.description}`, e)
         errorWhileAssigned.push(pick.description)
       }
     }

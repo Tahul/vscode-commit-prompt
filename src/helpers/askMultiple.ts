@@ -7,24 +7,43 @@ import type { Question } from './defaultCommitQuestions'
  * Picked = added to next commit
  * Unpicked = not in next commit
  */
-export async function askMultiple(items: vscode.QuickPickItem[], question?: Question): Promise<vscode.QuickPickItem[]> {
+export async function askMultiple(
+  items: vscode.QuickPickItem[],
+  question?: Question,
+  onDidChangeSelection?: (
+    value: readonly vscode.QuickPickItem[],
+    quickpick: vscode.QuickPick<vscode.QuickPickItem>
+  ) => void,
+): Promise<vscode.QuickPickItem[]> {
   const cwd = getCwd()
 
   if (!cwd) { return [] }
 
-  const pickOptions: vscode.QuickPickOptions = {
-    title: question?.title,
-    placeHolder: question?.placeHolder,
-    ignoreFocusOut: true,
-    matchOnDescription: true,
-    matchOnDetail: true,
-    canPickMany: true,
-  }
+  const quickpick = vscode.window.createQuickPick()
 
-  const picks = await vscode.window.showQuickPick(
-    items,
-    pickOptions,
-  ) as vscode.QuickPickItem[] | undefined
+  quickpick.title = question?.title
+  quickpick.placeholder = question?.placeHolder
+  quickpick.items = items
+  quickpick.canSelectMany = true
+  quickpick.ignoreFocusOut = true
+  quickpick.matchOnDescription = true
+  quickpick.matchOnDetail = true
+  quickpick.selectedItems = items.filter(item => item.picked)
+  if (onDidChangeSelection) quickpick.onDidChangeSelection((values) => onDidChangeSelection(values, quickpick))
+
+  quickpick.show()
+
+  const picks = await new Promise<readonly vscode.QuickPickItem[] | undefined>((resolve, reject) => {
+    quickpick.onDidAccept(() => {
+      resolve(quickpick.selectedItems)
+    })
+
+    quickpick.onDidHide(() => {
+      resolve(undefined)
+    })
+  })
+
+  quickpick.dispose()
 
   if (!picks) { return [] }
 
