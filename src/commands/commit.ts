@@ -100,7 +100,8 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
         }
       }
       catch (e: any) {
-        if (e?.message === 'Required input cancelled.') { return }
+        console.log(e.message)
+        if (e?.message === 'Required input escaped!') { return }
         outputMessage('Cancelling commit!', e)
         return
       }

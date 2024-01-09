@@ -39,6 +39,7 @@ export function defaultCommitQuestions(
       title: 'Type of your commit',
       placeHolder: 'Select the type of change you are committing (required)',
       type: 'oneOf',
+      required: true,
       prompts: defaultCommitTypes,
     },
     {
@@ -48,6 +49,7 @@ export function defaultCommitQuestions(
       type: scopes?.length ? 'oneOf' : 'input',
       scopes: scopes || undefined,
       format: '({value})',
+      required: false,
       suffix: ':',
     },
     {
@@ -63,6 +65,7 @@ export function defaultCommitQuestions(
       title: 'Body of your commit',
       placeHolder: 'Add a longer description (optional)',
       type: 'input',
+      required: false,
       format: '\n\n{value}', // Break 2 lines for body
     },
     {
@@ -70,6 +73,7 @@ export function defaultCommitQuestions(
       title: 'Issues closed by your commit',
       placeHolder: 'Select the issue(s) to close (optional)',
       type: 'issues',
+      required: false,
       format: '\n\nCloses {value}', // Break 2 lines for issues
     },
   ]

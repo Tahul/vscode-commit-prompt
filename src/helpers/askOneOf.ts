@@ -51,7 +51,7 @@ export async function askOneOf(question: Question): Promise<vscode.QuickPickItem
 
   let result: vscode.QuickPickItem | undefined = await vscode.window.showQuickPick(quickpickItems, pickOptions)
 
-  if (question.required && result === undefined) { throw new Error('Required input escaped!') }
+  if (question?.required && result === undefined) { throw new Error('Required input escaped!') }
 
   if (result === undefined) { return { label: '' } }
 

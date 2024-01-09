@@ -39,7 +39,7 @@ export async function ask(question: Question, currentValue?: string): Promise<vs
 
   let input = await vscode.window.showInputBox(options) || ''
 
-  if (question.required && !input) { throw new Error('Required input escaped!') }
+  if (question?.required && !input) { throw new Error('Required input escaped!') }
 
   // Return formatted question result
   if (question?.format && input) {
