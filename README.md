@@ -2,11 +2,11 @@
 
 ![VS Marketplace Badge](./docs/vscode-commit-prompt.png)
 
-Commit and manage issues **faster** and **cleaner** with keybound **prompts** for VS Code.
+Commit and manage issues **faster** and **cleaner** with keyboard **prompts** for VS Code.
 
 - 🕹️ Add & commit multiple files without using your mouse once.
 - 💄 Improve your git history with two strong default presets.
-- 👥 Specify your own questions, types, scopes and share them with your team.
+- 👥 Specify your own questions, types, and scopes and share them with your team.
 - ✅ Minimalist approach to GitHub issues management from VS Code quick prompts.
 
 ## ⌨️ Actions
@@ -15,7 +15,7 @@ Commit and manage issues **faster** and **cleaner** with keybound **prompts** fo
 
 ![Demo](./docs/commit.gif)
 
-All actions that relates to committing code (add, push, commit, undo) resolves around `Cmd+Y` by default.
+All actions that relate to committing code (add, push, commit, undo) revolve around `Cmd+Y` by default.
 
 - `cmd+y` => commit
 - `shift+cmd+y` => push
@@ -45,9 +45,9 @@ Push after your commit if you enabled [`pushAfterCommit`].
 
 Opens the `Add` prompt.
 
-Show changes from current working tree and allow you to add them individually.
+Show changes from the current working tree and allow you to add them individually.
 
-Allows to add `all` (`git add ${workspaceRoot}`) with first prompt item.
+Allows to add `all` (`git add ${workspaceRoot}`) with the first prompt item.
 
 Will `rm` unchecked files from the staged files.
 
@@ -98,7 +98,7 @@ Allows to discard the changes (`git reset --hard HEAD^`).
 
 ![Demo](./docs/issue.gif)
 
-All actions that relates to GitHub issues resolves around `Cmd+U` by default.
+All actions that relate to GitHub issues revolve around `Cmd+U` by default.
 
 Any action related to GitHub issues will need you to provide `githubToken`.
 
@@ -117,7 +117,7 @@ Allows to create a new minimal issue with a similar shape as a commit.
 
 Lists open issues on GitHub and orders between assigned and unassigned issues.
 
-You can toggle if new issues gets auto-assigned to you using [`autoAssignOpenedIssues`].
+You can toggle if new issues get auto-assigned to you using [`autoAssignOpenedIssues`].
 
 - Default:
   ```json
@@ -175,13 +175,13 @@ Lists open issues that are assigned to you.
 
 ## ⚙️ Config
 
-There is two way to handle the configuration of this extension.
+There are two ways to handle the configuration of this extension.
 
 The first is to use the configuration parameters from VSCode, you will find all the available settings under `commit-prompt` keys.
 
 The second is to use config files from the current repository you are working with.
 
-The per repository config can be specified from 3 places:
+The per-repository config can be specified from 3 places:
 
 - `.cprc` file placed at root.
 - `.cp.json` file placed at root.
@@ -197,17 +197,17 @@ The format must be the following:
 }
 ```
 
-> If you are willing to share settings like `scopes` with your team, I recommend you to use the package.json config key or `.vscode/settings.json`.
+> If you are willing to share settings like `scopes` with your team, I recommend you use the package.json config key or `.vscode/settings.json`.
 
 ### 👤 VSCode settings
 
-VSCode settings exposes four parameters:
+VSCode settings expose four parameters:
 
 #### Preset `commit-prompt.preset`
 
 You can choose between `conventional-commits` and `cz-emoji`.
 
-You can find preset types content here:
+You can find preset types of content here:
 
 - [conventional-commits](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L412)
 - [cz-emoji](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts#L19)
@@ -224,7 +224,7 @@ Default: `true`
 
 #### Push After Commit `commit-prompt.pushAfterCommit`
 
-Whether or not your want the extension to `git push` after each commit.
+Whether or not you want the extension to `git push` after each commit.
 
 Default: `false`
 
@@ -245,15 +245,15 @@ Supports:
 
 ### 👥 Per repository config
 
-Per repository config exposes three parameters: `scopes`, `types` and `questions`.
+Per repository config exposes three parameters: `scopes`, `types`, and `questions`.
 
 #### _scopes_ (optional)
 
 Scopes is a text input by default, allowing you to define a custom scope on each commit.
 
-If you want to lock scopes, and specify a list, you can by using the `scopes` attribute from config.
+If you want to lock scopes and specify a list, you can by using the `scopes` attribute from config.
 
-Specify a list of scope, and you will be prompted to chose between them on each commit.
+Specify a list of scopes, and you will be prompted to choose between them on each commit.
 
 ```typescript
 const scopes: CommitPromptScopeType;
@@ -283,7 +283,7 @@ export interface CommitPromptScopeType {
 
 If you specify this key in config, the default types will be overwritten by yours completely.
 
-Default can be found in [defaultTypes.ts](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your own config.
+Default can be found in [defaultTypes.ts](https://github.com/Tahul/vscode-commit-prompt/blob/main/src/helpers/defaultTypes.ts), copy/pasting them can be a great starting point for your config.
 
 ```typescript
 const types: CommitPromptType[];
@@ -319,7 +319,7 @@ Specifying `questions` key will result in overwriting the complete default scena
 
 This means you can easily build your own scenario from the config file.
 
-Note that using this key will result in both types and scopes keys to be useless, as you will have to specify these keys directly from your questions payloads.
+Note that using this key will result in both types and scopes keys being useless, as you will have to specify these keys directly from your question's payloads.
 
 ```typescript
 const questions: Question[];
@@ -363,13 +363,13 @@ You can take a look at the [default commit questions](./src/helpers/defaultCommi
 
 ## ⁉️ Why?
 
-[I](https://github.com/Tahul) would like to improve my *commit* / *issues* flow that currently is source of friction to my code sessions.
+[I](https://github.com/Tahul) would like to improve my *commit* / *issues* flow that currently is the source of friction to my code sessions.
 
 Switching between my _issues tracker_, my _code editor_ and the _Git CLI_ is the flow that takes most of my time outside of coding.
 
-Also, I'm used to sending giant commits and that causes me pain everytime I review my git history.
+Also, I'm used to sending giant commits and that causes me pain every time I review my git history.
 
-This aims to be a minimal, fast and efficient way to improve my workflow and reduce friction. Maybe it could be yours too?
+This aims to be a minimal, fast, and efficient way to improve my workflow and reduce friction. Maybe it could be yours too?
 
 ## 👨‍💻 Credits
 
@@ -377,4 +377,4 @@ This VSCode app has been written by [Yaël GUILLOUX](https://twitter.com/yaeeelg
 
 This has been heavily inspired by [cz-emoji](https://github.com/ngryman/cz-emoji) by [ngryman](https://github.com/ngryman).
 
-If you have any question concerning this app, don't hesitate to reach me, on [Twitter](https://twitter.com/yaeeelglx) or by [email](mailto:yael.guilloux@gmail.com).
+If you have any questions concerning this app, don't hesitate to reach me, on [Twitter](https://twitter.com/yaeeelglx) or by [email](mailto:yael.guilloux@gmail.com).
