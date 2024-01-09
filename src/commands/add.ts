@@ -81,11 +81,15 @@ function castIndexChangesToQuickPickItems(
  */
 export function add(
   extensionContext: CommitPromptExtensionContext,
+  sync: boolean = true
 ): CommandCallback {
   return async () => {
     const { git, outputMessage, cwd, cpCodeConfig } = extensionContext
 
     if (!cwd) { return }
+
+    // Sync git
+    if (sync) await vscode.commands.executeCommand('git.refresh')
 
     const repo: Repository = git.repositories[0]
 

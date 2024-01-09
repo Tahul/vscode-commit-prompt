@@ -15,11 +15,13 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
   return async () => {
     const { cpCodeConfig, outputMessage } = extensionContext
 
+    await vscode.commands.executeCommand('git.refresh')
+
     const questions = await getCommitQuestions(extensionContext)
 
     let addedChanges: vscode.QuickPickItem[] | undefined
     if (cpCodeConfig?.addBeforeCommit) {
-      addedChanges = await add(extensionContext)()
+      addedChanges = await add(extensionContext, false)()
 
       // Cancel prompts if escaped
       if (!addedChanges?.length) { return }

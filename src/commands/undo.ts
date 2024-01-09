@@ -12,6 +12,9 @@ export function undo(extensionContext: CommitPromptExtensionContext): CommandCal
 
     if (!cwd) { return }
 
+    // Sync git
+    await vscode.commands.executeCommand('git.refresh')
+
     const lastMessage = cp.execSync('git --no-pager log -1 --format=%B', { cwd }).toString().split('\n')?.[0]
 
     if (!lastMessage) {

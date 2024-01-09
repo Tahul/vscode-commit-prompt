@@ -14,6 +14,9 @@ export function push(extensionContext: CommitPromptExtensionContext): CommandCal
 
     if (!cwd) { return }
 
+    // Sync git
+    await vscode.commands.executeCommand('git.refresh')
+
     const commits: string[] = cp
       .execSync('git log origin/main..HEAD --oneline | cat', { cwd })
       .toString()
