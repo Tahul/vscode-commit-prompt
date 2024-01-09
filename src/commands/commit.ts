@@ -86,7 +86,8 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
             if (githubErrored) {
               commitMessage += await ask({
                 name: 'issues',
-                placeHolder: 'Write any issue closed (#xx, #xy, #yz...)',
+                title: question?.title || 'Issues closed by your commit',
+                placeHolder: 'Select the issue(s) to close (optional, in this format: #123, #456)',
                 type: 'input',
                 format: '\n\nCloses {value}', // Break 2 lines for issues
               }).then(v => v?.label)
