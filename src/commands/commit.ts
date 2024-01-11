@@ -66,20 +66,19 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
               if (picks.find(pick => pick.label === 'Previous page')) {
                 return await askIssues(page - 1 >= 1 ? page - 1 : 1)
               }
-
-              let resolvedResult: string = question?.format || ''
-
-              if (question?.format) {
-                resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+              if (picks.length) {
+                let resolvedResult: string = question?.format || ''
+                if (question?.format) {
+                  resolvedResult = resolvedResult.replace('{value}', picks.filter(pick => !!pick?.description).map(pick => `#${pick.description}`).join(', '))
+                }
+                if (question?.suffix) {
+                  resolvedResult = resolvedResult + question?.suffix
+                }
+                if (question?.prefix) {
+                  resolvedResult = question?.prefix + resolvedResult
+                }
+                commitMessage += resolvedResult
               }
-              if (question?.suffix) {
-                resolvedResult = resolvedResult + question?.suffix
-              }
-              if (question?.prefix) {
-                resolvedResult = question?.prefix + resolvedResult
-              }
-
-              commitMessage += resolvedResult
 
               return
             }
