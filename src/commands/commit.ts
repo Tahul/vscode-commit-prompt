@@ -51,12 +51,18 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
             let githubErrored = false
 
             try {
-              const { ordered: issuesItems } = await getOrderedIssues(extensionContext, page)
-
-              if (issuesItems.length === 0) { throw new Error('No GitHub issues found!') }
+              
 
               const picks = await askMultiple(
-                paginateIssuesItems(issuesItems, page, cpCodeConfig.githubPerPage),
+                new Promise((resolve) =>
+                  getOrderedIssues(extensionContext, page).then(
+                    ({ ordered }) => {
+                      if (ordered.length > 0) {
+                        resolve(paginateIssuesItems(ordered, page, cpCodeConfig.githubPerPage))
+                      }
+                    }
+                  )
+                ),
                 question,
               )
 

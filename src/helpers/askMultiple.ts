@@ -2,13 +2,17 @@ import * as vscode from 'vscode'
 import { getCwd } from './getCwd'
 import type { Question } from './defaultCommitQuestions'
 
+function isPromise(obj: any) {
+  return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
+}
+
 /**
  * Ask to pick between multiple file changes from Git current tree.
  * Picked = added to next commit
  * Unpicked = not in next commit
  */
 export async function askMultiple(
-  items: vscode.QuickPickItem[],
+  items: vscode.QuickPickItem[] | Promise<vscode.QuickPickItem[]>,
   question?: Question,
   onDidChangeSelection?: (
     value: readonly vscode.QuickPickItem[],
@@ -23,17 +27,26 @@ export async function askMultiple(
 
   quickpick.title = question?.title
   quickpick.placeholder = question?.placeHolder
-  quickpick.items = items
+  
   quickpick.canSelectMany = true
   quickpick.ignoreFocusOut = true
   quickpick.matchOnDescription = true
   quickpick.matchOnDetail = true
-  quickpick.selectedItems = items.filter(item => item.picked)
   if (onDidChangeSelection) { quickpick.onDidChangeSelection(values => onDidChangeSelection(values, quickpick)) }
 
   quickpick.show()
+  
+  if (!isPromise(items)) {
+    quickpick.items = items as vscode.QuickPickItem[]
+    quickpick.selectedItems = quickpick.items.filter(item => item.picked)
+  } else {
+    (items as Promise<vscode.QuickPickItem[]>).then(items => {
+      quickpick.items = items
+      quickpick.selectedItems = quickpick.items.filter(item => item.picked)
+    })
+  }
 
-  const picks = await new Promise<readonly vscode.QuickPickItem[] | undefined>((resolve, reject) => {
+  const picks = await new Promise<readonly vscode.QuickPickItem[] | undefined>((resolve) => {
     quickpick.onDidAccept(() => {
       resolve(quickpick.selectedItems)
     })
