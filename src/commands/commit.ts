@@ -33,6 +33,8 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
       try {
         let result: vscode.QuickPickItem | undefined
 
+        if (question.name === 'body' && cpCodeConfig.skipCommitBody) continue
+
         if (question.type === 'oneOf') {
           result = await askOneOf(question)
         }
@@ -47,12 +49,12 @@ export function commit(extensionContext: CommitPromptExtensionContext): CommandC
         }
 
         if (question.name === 'issues' && question.type === 'issues') {
+          if (cpCodeConfig.skipCommitIssues) continue
+          
           const askIssues = async (page: number = 1): Promise<any> => {
             let githubErrored = false
 
             try {
-              
-
               const picks = await askMultiple(
                 new Promise((resolve) =>
                   getOrderedIssues(extensionContext, page).then(

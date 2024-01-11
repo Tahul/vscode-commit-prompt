@@ -43,6 +43,8 @@ export interface CommitPromptCodeConfig extends CommitPromptConfig {
   showOutputChannel: 'status' | 'popup' | 'none'
   addAllByDefault: boolean
   addBeforeCommit: boolean
+  skipCommitBody: boolean
+  skipCommitIssues: boolean
   pushAfterCommit: boolean
   preset: 'conventional-commits' | 'cz-emoji'
   githubToken?: string

@@ -261,6 +261,16 @@ The format must be the following:
         "enum": ["status", "popup", "none"],
         "type": "string"
       },
+      "commit-prompt.skipCommitBody": {
+        "default": true,
+        "description": "Skips the long description step of the default commit prompt.",
+        "type": "boolean"
+      },
+      "commit-prompt.skipCommitIssues": {
+        "default": true,
+        "description": "Skips the issues step of the default commit prompt.",
+        "type": "boolean"
+      },
       "commit-prompt.subjectLength": {
         "default": 75,
         "description": "Override the allowed commit message subject length.",
