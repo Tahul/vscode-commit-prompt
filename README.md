@@ -262,12 +262,12 @@ The format must be the following:
         "type": "string"
       },
       "commit-prompt.skipCommitBody": {
-        "default": true,
+        "default": false,
         "description": "Skips the long description step of the default commit prompt.",
         "type": "boolean"
       },
       "commit-prompt.skipCommitIssues": {
-        "default": true,
+        "default": false,
         "description": "Skips the issues step of the default commit prompt.",
         "type": "boolean"
       },
