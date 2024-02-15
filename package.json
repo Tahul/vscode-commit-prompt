@@ -48,6 +48,11 @@
         "mac": "alt+cmd+y"
       },
       {
+        "command": "vscode-commit-prompt.fast",
+        "key": "",
+        "mac": ""
+      },
+      {
         "command": "vscode-commit-prompt.open",
         "key": "ctrl+u",
         "mac": "cmd+u"
@@ -84,6 +89,10 @@
       {
         "command": "vscode-commit-prompt.push",
         "title": "commit-prompt: Push"
+      },
+      {
+        "command": "vscode-commit-prompt.fast",
+        "title": "commit-prompt: Fast commit"
       },
       {
         "command": "vscode-commit-prompt.assign",
@@ -203,16 +212,16 @@
     "strip-json-comments": "^5.0.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.6.2",
+    "@antfu/eslint-config": "^2.6.4",
     "@types/glob": "^8.1.0",
-    "@types/node": "^20.10.7",
-    "@types/vscode": "^1.80.0",
+    "@types/node": "^20.11.19",
+    "@types/vscode": "^1.86.0",
     "eslint": "^8.56.0",
     "glob": "^10.3.10",
-    "mocha": "^10.2.0",
+    "mocha": "^10.3.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.89.0",
+    "webpack": "^5.90.2",
     "webpack-cli": "^5.1.4"
   }
 }
