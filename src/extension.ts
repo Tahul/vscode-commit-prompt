@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
             outputChannel = vscode.window.createOutputChannel('Commit Prompt', 'js')
             outputChannel.show(true)
           }
-          outputChannel.append([msg, e].join('\n'))
+          outputChannel.append([`\n${msg}`, e].join('\n'))
           return
         }
 

@@ -13,6 +13,7 @@ import push from './push'
 import open from './open'
 import close from './close'
 import unassign from './unassign'
+import fast from './fast'
 
 export type CommandCallback = (...args: any[]) => any
 
@@ -40,6 +41,10 @@ export function generateCommands(extensionContext: CommitPromptExtensionContext)
     {
       reference: 'push',
       command: push(extensionContext),
+    },
+    {
+      reference: 'fast',
+      command: fast(extensionContext)
     },
     {
       reference: 'assign',
