@@ -41,6 +41,25 @@ Push after your commit if you enabled [`pushAfterCommit`](#-vscode-settings).
   }
   ```
 
+#### Fast commit **(new ✨)**
+
+Opens the `Commit` prompt for the current file and skips `body`, `issues` and any other extraneous steps.
+
+This command is made to speed single-file commits.
+
+It will resolve a default for the `subject` field using the file name.
+
+> It has no default keybinding, I use `Cmd+Shift+S` myself, to mimick a _remote-save_ feature.
+
+- Default:
+  ```json
+  {
+    "command": "vscode-commit-prompt.fast",
+    "key": "",
+    "mac": ""
+  }
+  ```
+
 #### Add
 
 Opens the `Add` prompt.
