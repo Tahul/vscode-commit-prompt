@@ -4,10 +4,15 @@ import type { Question } from './defaultCommitQuestions'
 /**
  * Ask a question using showInputBox and displays the current value inside the prompt.
  */
-export async function ask(question: Question, currentValue?: string): Promise<vscode.QuickPickItem> {
+export async function ask(
+  question: Question,
+  currentValue?: string,
+  defaultValue?: string
+): Promise<vscode.QuickPickItem> {
   const options: vscode.InputBoxOptions = {
     title: question?.title,
     placeHolder: question?.placeHolder,
+    value: defaultValue,
     ignoreFocusOut: true,
     prompt: currentValue,
   }

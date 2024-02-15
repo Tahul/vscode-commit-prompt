@@ -40,9 +40,6 @@ function castIndexChangesToQuickPickItems(
           Status.INDEX_ADDED,
           Status.INDEX_COPIED,
           Status.INDEX_RENAMED,
-          Status.ADDED_BY_US,
-          Status.ADDED_BY_THEM,
-          Status.BOTH_ADDED,
         ].includes(file.change.status)
 
         if (picked) { added.push(file) }
@@ -197,7 +194,7 @@ export function add(
         })
       ) {
         try {
-          await gitRemove(git, repo, change)
+          await gitRemove(change)
         }
         catch (e) {
           outputMessage(`Could git remove ${change.uri.fsPath}`, e)

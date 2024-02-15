@@ -10,7 +10,7 @@ export async function gitAdd(change: Change | string): Promise<void> {
 
   const cwd = fs.realpathSync(rootPath)
 
-  cp.execSync(`git add ${typeof change === 'string' ? change : change.uri.path}`, { cwd })
+  cp.execSync(`git add \'${typeof change === 'string' ? change : change.uri.path}\'`, { cwd })
 }
 
 export default gitAdd
