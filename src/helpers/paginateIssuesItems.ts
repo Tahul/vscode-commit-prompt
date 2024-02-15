@@ -6,8 +6,8 @@ export function paginateIssuesItems(
   perPage: number = 25,
 ): vscode.QuickPickItem[] {
   return [
-    ...(page > 1 ? [{ label: 'Previous page', detail: `Goes to page ${(page - 1 >= 1 ? page - 1 : 1).toString()}`, iconPath: new vscode.ThemeIcon('chevron-left') }] : []),
+    ...(page > 1 ? [{ label: 'Previous page', detail: `Goes to page ${(page - 1 >= 1 ? page - 1 : 1).toString()}`, iconPath: new vscode.ThemeIcon('chevron-left') } as any] : []),
     ...issuesItems,
-    ...(issuesItems.length >= (perPage || 25) ? [{ label: 'Next page', detail: `Goes to page ${(page + 1).toString()}`, iconPath: new vscode.ThemeIcon('chevron-right') }] : []),
+    ...(issuesItems.length >= (perPage || 25) ? [{ label: 'Next page', detail: `Goes to page ${(page + 1).toString()}`, iconPath: new vscode.ThemeIcon('chevron-right') } as any] : []),
   ]
 }

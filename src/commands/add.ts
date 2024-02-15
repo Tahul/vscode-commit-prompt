@@ -50,7 +50,7 @@ function castIndexChangesToQuickPickItems(
           detail: file.change.uri.path.replace(cwd, ''),
           iconPath: vscode.ThemeIcon.File,
           picked,
-        }
+        } as any
       },
     ),
   ]
@@ -62,7 +62,7 @@ function castIndexChangesToQuickPickItems(
       detail: cwd,
       iconPath: vscode.ThemeIcon.Folder,
       picked: addAllByDefault || added.length === fileChanges.length,
-    },
+    } as any,
     {
       kind: vscode.QuickPickItemKind.Separator,
       label: 'Changes',
